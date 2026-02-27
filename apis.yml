@@ -1,0 +1,128 @@
+name: Geneos
+description: 'Geneos is ITRS''s real-time monitoring platform that provides comprehensive  observability for trading systems, applications, and infrastructure. It offers  APIs for programmatic access to monitoring data, configuration, and automation.
+
+  '
+image: https://www.itrsgroup.com/images/geneos-logo.png
+url: https://www.itrsgroup.com/products/geneos
+created: 2024-01-15 00:00:00+00:00
+modified: 2024-01-15 00:00:00+00:00
+tags:
+- monitoring
+- observability
+- trading systems
+- real-time
+- infrastructure
+- APM
+apis:
+- name: Geneos Gateway REST API
+  description: 'RESTful API for interacting with Geneos Gateway to retrieve monitoring data, manage dataviews, samplers, and entities programmatically.
+
+    '
+  image: https://www.itrsgroup.com/images/gateway-icon.png
+  humanURL: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_commands_tr.html
+  baseURL: https://gateway-host:8080/rest/api
+  properties:
+  - type: Documentation
+    url: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_rest_api.html
+  - type: OpenAPI
+    url: https://gateway-host:8080/rest/api/swagger.json
+  - type: Authentication
+    url: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/rest_api_authentication.html
+  tags:
+  - REST
+  - monitoring
+  - dataviews
+  - real-time data
+  contact:
+  - type: Support
+    url: https://www.itrsgroup.com/support
+- name: Geneos XML-RPC API
+  description: 'XML-RPC interface for programmatic control of Geneos Gateway including executing commands, managing configuration, and retrieving monitoring data.
+
+    '
+  humanURL: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html
+  baseURL: https://gateway-host:8080/xmlrpc
+  properties:
+  - type: Documentation
+    url: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html
+  - type: Examples
+    url: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/xml-rpc_examples.html
+  tags:
+  - XML-RPC
+  - automation
+  - commands
+  - configuration
+- name: Geneos Web Dashboard API
+  description: 'API for integrating with Geneos Web Dashboard, enabling custom dashboards, data visualization, and user interface extensions.
+
+    '
+  humanURL: https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/web-dashboard.html
+  baseURL: https://dashboard-host/api
+  properties:
+  - type: Documentation
+    url: https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/dashboard_api.html
+  - type: Widgets
+    url: https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/custom_widgets.html
+  tags:
+  - dashboard
+  - visualization
+  - UI
+  - web
+- name: Geneos Stream API
+  description: 'Streaming API for real-time subscription to Geneos monitoring data changes, enabling event-driven applications and integrations.
+
+    '
+  humanURL: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/streaming_api.html
+  baseURL: https://gateway-host:8080/stream
+  properties:
+  - type: Documentation
+    url: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/streaming_api.html
+  - type: WebSocket
+    url: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/websocket_connection.html
+  tags:
+  - streaming
+  - websocket
+  - real-time
+  - events
+- name: Geneos Toolkit API
+  description: 'Java and Python APIs provided through Geneos Toolkit for building custom integrations, plugins, and automation scripts.
+
+    '
+  humanURL: https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html
+  properties:
+  - type: Documentation
+    url: https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit_api.html
+  - type: Java SDK
+    url: https://docs.itrsgroup.com/docs/geneos/current/Toolkit/java_api.html
+  - type: Python SDK
+    url: https://docs.itrsgroup.com/docs/geneos/current/Toolkit/python_api.html
+  - type: GitHub
+    url: https://github.com/ITRS-Group/geneos-toolkit
+  tags:
+  - SDK
+  - Java
+  - Python
+  - plugins
+common:
+- type: Portal
+  url: https://www.itrsgroup.com/
+- type: Documentation
+  url: https://docs.itrsgroup.com/docs/geneos/
+- type: Support
+  url: https://www.itrsgroup.com/support
+- type: Knowledge Base
+  url: https://kb.itrsgroup.com/
+- type: Community
+  url: https://community.itrsgroup.com/
+- type: Training
+  url: https://www.itrsgroup.com/training
+- type: Contact
+  url: https://www.itrsgroup.com/contact
+- type: Terms of Service
+  url: https://www.itrsgroup.com/terms
+- type: Privacy Policy
+  url: https://www.itrsgroup.com/privacy
+maintainers:
+- name: ITRS Group
+  email: support@itrsgroup.com
+  url: https://www.itrsgroup.com
