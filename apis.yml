@@ -14,12 +14,12 @@ url: >-
   https://raw.githubusercontent.com/api-evangelist/geneos/refs/heads/main/apis.yml
 specificationVersion: '0.19'
 tags:
+  - APM
+  - Infrastructure
   - Monitoring
   - Observability
+  - Real-Time
   - Trading Systems
-  - Real-time
-  - Infrastructure
-  - APM
 apis:
   - aid: geneos:gateway-rest
     name: Geneos Gateway REST API
@@ -28,8 +28,8 @@ apis:
       manage dataviews, samplers, and entities programmatically.
     humanURL: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_commands_tr.html
     tags:
-      - REST
       - Monitoring
+      - REST
     properties:
       - type: Documentation
         url: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_rest_api.html
@@ -42,8 +42,8 @@ apis:
       executing commands, managing configuration, and retrieving monitoring data.
     humanURL: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html
     tags:
-      - XML-RPC
       - Automation
+      - XML-RPC
     properties:
       - type: Documentation
         url: https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html
@@ -54,9 +54,9 @@ apis:
       integrations, plugins, and automation scripts.
     humanURL: https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html
     tags:
-      - SDK
       - Java
       - Python
+      - SDK
     properties:
       - type: Documentation
         url: https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit_api.html
