@@ -1,117 +1,115 @@
 # Geneos (geneos)
-Geneos is ITRS's real-time monitoring platform that provides comprehensive  observability for trading systems, applications, and infrastructure. It offers  APIs for programmatic access to monitoring data, configuration, and automation.
 
+Geneos is ITRS Group's real-time monitoring platform that provides comprehensive observability for trading systems, applications, and infrastructure. Widely deployed across investment banks, hedge funds, and exchanges, Geneos collects high-frequency telemetry from custom samplers and toolkits, aggregates it through Gateways, and exposes that data through REST, XML-RPC, streaming, and SDK interfaces for programmatic access, automation, and dashboarding.
 
-**URL:** [Visit APIs.json URL](https://www.itrsgroup.com/products/geneos)
+**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/geneos/refs/heads/main/apis.yml)
 
-## Tags:
+## Scope
 
- - monitoring, observability, trading systems, real-time, infrastructure, APM
+- **Type:** Index
+- **Position:** Consumer
+- **Access:** 3rd-Party
+
+## Tags
+
+- APM
+- Capital Markets
+- Infrastructure
+- ITRS
+- Monitoring
+- Observability
+- Real-Time
+- Trading Systems
 
 ## Timestamps
 
-- **Created:** 2024-01-15 00:00:00+00:00 
-- **Modified:** 2024-01-15 00:00:00+00:00 
+- **Created:** 2024-01-15
+- **Modified:** 2026-04-28
 
 ## APIs
 
 ### Geneos Gateway REST API
-RESTful API for interacting with Geneos Gateway to retrieve monitoring data, manage dataviews, samplers, and entities programmatically.
 
+RESTful API exposed by the Geneos Gateway for retrieving monitoring data and managing dataviews, samplers, entities, and snooze states programmatically.
 
-**Human URL:** [https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_commands_tr.html](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_commands_tr.html)
+**Human URL:** [Gateway REST API Documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_rest_api.html)
 
+#### Tags
 
-#### Tags:
-
- - REST, monitoring, dataviews, real-time data
+- Monitoring
+- REST
 
 #### Properties
 
 - [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_rest_api.html)
-- [OpenAPI](https://gateway-host:8080/rest/api/swagger.json)
 - [Authentication](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/rest_api_authentication.html)
 
 ### Geneos XML-RPC API
-XML-RPC interface for programmatic control of Geneos Gateway including executing commands, managing configuration, and retrieving monitoring data.
 
+XML-RPC interface for programmatic control of Geneos Gateway including executing commands, managing configuration, publishing data into Gateways, and retrieving monitoring data.
 
-**Human URL:** [https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html)
+**Human URL:** [XML-RPC API Documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html)
 
+#### Tags
 
-#### Tags:
-
- - XML-RPC, automation, commands, configuration
+- Automation
+- XML-RPC
 
 #### Properties
 
 - [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html)
-- [Examples](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/xml-rpc_examples.html)
 
 ### Geneos Web Dashboard API
-API for integrating with Geneos Web Dashboard, enabling custom dashboards, data visualization, and user interface extensions.
 
+API for integrating with the Geneos Web Dashboard, enabling custom dashboards, data visualization, and user interface extensions on top of Geneos monitoring data.
 
-**Human URL:** [https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/web-dashboard.html](https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/web-dashboard.html)
+**Human URL:** [Web Dashboard Documentation](https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/web-dashboard.html)
 
+#### Tags
 
-#### Tags:
-
- - dashboard, visualization, UI, web
-
-#### Properties
-
-- [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/dashboard_api.html)
-- [Widgets](https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/custom_widgets.html)
-
-### Geneos Stream API
-Streaming API for real-time subscription to Geneos monitoring data changes, enabling event-driven applications and integrations.
-
-
-**Human URL:** [https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/streaming_api.html](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/streaming_api.html)
-
-
-#### Tags:
-
- - streaming, websocket, real-time, events
+- Dashboard
+- UI
+- Visualization
+- Web
 
 #### Properties
 
-- [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/streaming_api.html)
-- [WebSocket](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/websocket_connection.html)
+- [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/web-dashboard.html)
 
 ### Geneos Toolkit API
-Java and Python APIs provided through Geneos Toolkit for building custom integrations, plugins, and automation scripts.
 
+Java and Python APIs delivered through the Geneos Toolkit for building custom integrations, samplers, plugins, and automation scripts that publish data into and pull data out of Geneos.
 
-**Human URL:** [https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html](https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html)
+**Human URL:** [Toolkit Documentation](https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html)
 
+#### Tags
 
-#### Tags:
-
- - SDK, Java, Python, plugins
+- Java
+- Python
+- SDK
 
 #### Properties
 
-- [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit_api.html)
-- [Java SDK](https://docs.itrsgroup.com/docs/geneos/current/Toolkit/java_api.html)
-- [Python SDK](https://docs.itrsgroup.com/docs/geneos/current/Toolkit/python_api.html)
-- [GitHub](https://github.com/ITRS-Group/geneos-toolkit)
+- [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html)
+- [Toolkit on GitHub](https://github.com/ITRS-Group/geneos-toolkit)
+- [ITRS Group on GitHub](https://github.com/ITRS-Group)
 
 ## Common Properties
 
-- [Portal](https://www.itrsgroup.com/)
+- [Website](https://www.itrsgroup.com/)
+- [Geneos Product Page](https://www.itrsgroup.com/products/geneos)
 - [Documentation](https://docs.itrsgroup.com/docs/geneos/)
 - [Support](https://www.itrsgroup.com/support)
-- [Knowledge Base](https://kb.itrsgroup.com/)
 - [Community](https://community.itrsgroup.com/)
+- [Knowledge Base](https://kb.itrsgroup.com/)
 - [Training](https://www.itrsgroup.com/training)
 - [Contact](https://www.itrsgroup.com/contact)
 - [Terms of Service](https://www.itrsgroup.com/terms)
 - [Privacy Policy](https://www.itrsgroup.com/privacy)
+- [ITRS Group on GitHub](https://github.com/ITRS-Group)
 
 ## Maintainers
 
-**FN:** ITRS Group
+**FN:** Kin Lane
 
-**Email:** support@itrsgroup.com
+**Email:** kin@apievangelist.com
