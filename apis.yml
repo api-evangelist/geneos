@@ -99,6 +99,8 @@ apis:
       - type: GitHubOrganization
         url: https://github.com/ITRS-Group
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/geneos-therapeutics
   - type: Website
     url: https://www.itrsgroup.com/
   - type: ProductPage
