@@ -94,7 +94,7 @@ apis:
       - type: Documentation
         url: >-
           https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html
-      - type: SDK
+      - type: SDKs
         url: https://github.com/ITRS-Group/geneos-toolkit
       - type: GitHubOrganization
         url: https://github.com/ITRS-Group
