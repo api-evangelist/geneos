@@ -99,6 +99,8 @@ apis:
       - type: GitHubOrganization
         url: https://github.com/ITRS-Group
 common:
+  - type: DomainSecurity
+    url: security/geneos-domain-security.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/geneos-therapeutics
   - type: Website
