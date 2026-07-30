@@ -9,7 +9,19 @@ description: >-
   REST, XML-RPC, streaming, and SDK interfaces for programmatic access,
   automation, and dashboarding.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Freemium
+  confidence: medium
+  source:
+  - plans
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/geneos.png
 access: 3rd-Party
 created: '2024-01-15'
 modified: '2026-04-28'
