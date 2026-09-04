@@ -36,7 +36,7 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/geneos.png
 access: 3rd-Party
 created: '2024-01-15'
 modified: '2026-04-28'
-position: Consumer
+position: Consuming
 url: >-
   https://raw.githubusercontent.com/api-evangelist/geneos/refs/heads/main/apis.yml
 specificationVersion: '0.23'
