@@ -1,0 +1,97 @@
+generated: '2026-09-12'
+method: searched
+source: https://docs.itrsgroup.com/docs/all/geneos/7x-geneos-release-notes/index.html
+docs:
+  - https://docs.itrsgroup.com/docs/all/geneos/7x-geneos-release-notes/index.html
+  - https://docs.itrsgroup.com/docs/all/whats-new/geneos-whats-new/index.html
+  - https://docs.itrsgroup.com/docs/geneos/current/index.html
+specification: API Commons Lifecycle
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+versioning:
+  scheme: semver-like MAJOR.MINOR.PATCH on the product, not on the APIs
+  current: 7.11.2
+  current_released: '2026-09-10'
+  cadence: >-
+    "New versions are released every two months." Patch releases land between
+    minors — 7.11.0 (30 July 2026), 7.11.1 (5 August 2026), 7.11.2 (10 September 2026).
+  docs_versioning: >-
+    The documentation site is versioned per release, with /current/ redirecting
+    to the newest (7.11.0 at the time of this probe). Older release trees stay
+    online — the Netprobe REST API's ReDoc page is still served from the 5.14.0
+    tree even though the OpenAPI it loads is the live one at
+    /docs/geneos/api-sources/v1/rest-api.yaml.
+  api_versioning: >-
+    The Netprobe REST API paths are versioned independently and are on v1. The
+    Gateway REST command service and the XML-RPC API carry no version in the
+    path; their surface changes with the product release.
+deprecation:
+  policy_published: true
+  grade: documented
+  mechanism: release-notes announcement
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  note: >-
+    ITRS publishes end-of-support dates and breaking-change notices in the Geneos
+    release notes, but there is no standalone deprecation policy document, no
+    stated notice period, and no RFC 8594 Deprecation/Sunset headers on any HTTP
+    surface. The evidence for a policy is therefore the announcements themselves,
+    not a published rule — graded `documented`, not `verified`.
+  announcements:
+    - subject: Licence Daemon support for Geneos versions earlier than 7.8.0
+      status: ended
+      date: '2026-07-31'
+      quote: '"Support for versions earlier than 7.8.0 ended on 31 July 2026."'
+      source: https://docs.itrsgroup.com/docs/all/geneos/7x-geneos-release-notes/index.html
+    - subject: Geneos 6.x component releases
+      status: limited
+      date: '2025-01'
+      quote: >-
+        "Beginning January 2025, the release of Geneos components for version 6.x
+        is now limited to" a named subset (Netprobe Minimal, Gateway, Deployments).
+      source: https://docs.itrsgroup.com/docs/all/geneos/7x-geneos-release-notes/index.html
+    - subject: 'ServiceNow integration (ITRS-Group/ServiceNow-integration)'
+      status: deprecated
+      date: '2024-10-10'
+      note: Repository description marks it DEPRECATED; superseded by cordial's servicenow/servicenow2 integrations.
+      source: https://github.com/ITRS-Group/ServiceNow-integration
+    - subject: 'PagerDuty integration (ITRS-Group/pagerduty-integration)'
+      status: deprecated
+      date: '2024-10-10'
+      note: Repository description marks it DEPRECATED; superseded by cordial's pagerduty integration.
+      source: https://github.com/ITRS-Group/pagerduty-integration
+breaking_changes:
+  - version: Active Console 7.9.0
+    change: Idle SSO users are now automatically logged out.
+  - version: Gateway 7.7.0 / Netprobe 7.7.0
+    change: >-
+      A default row limit of 200 rows is enforced for plugins that previously had
+      no configured limit. This silently truncates dataviews that used to grow
+      unbounded, and it is the same limit that surfaces as LIMIT_REACHED on the
+      XML-RPC API.
+status_page:
+  published: false
+  probed:
+    - url: https://status.itrsgroup.com/
+      status: 0
+      note: DNS does not resolve.
+  note: >-
+    No status page exists and none is expected to — Geneos runs inside the
+    customer's own estate, so there is no shared service whose availability ITRS
+    could report. No `StatusPage` pointer is wired in apis.yml.
+sla:
+  published: false
+  support_model: >-
+    ITRS publishes a four-level severity classification (Severity 1 production
+    failure through Severity 4 general enquiry) and a Level 1 → Level 2 support
+    escalation model on its support centre page, plus 24x7 toll-free phone lines
+    for the UK and US. Weekend and public-holiday telephone support is limited to
+    Premium Service subscribers. No response-time commitments are published
+    publicly; they sit in the commercial contract.
+  source: https://www.itrsgroup.com/support-center
+deprecated_operations:
+  derived_from: openapi/geneos-netprobe-rest-api-openapi.yml
+  count: 0
+  note: 'No operation in the published OpenAPI carries `deprecated: true`.'

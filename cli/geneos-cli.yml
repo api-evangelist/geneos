@@ -1,0 +1,154 @@
+generated: '2026-09-12'
+method: searched
+source: >-
+  https://github.com/ITRS-Group/cordial/blob/main/tools/geneos/README.md and
+  https://github.com/ITRS-Group/cordial/blob/main/tools/geneos/docs/geneos.md
+specification: API Commons CLI
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+cli:
+  name: geneos
+  official: true
+  first_party: true
+  repository: https://github.com/ITRS-Group/cordial
+  docs: https://github.com/ITRS-Group/cordial/blob/main/tools/geneos/docs/geneos.md
+  language: Go
+  version: v1.29.2
+  released: '2026-09-09'
+  license: Apache-2.0 with additional ITRS terms (repo LICENSE, SPDX NOASSERTION)
+  purpose: >-
+    Manage a Geneos environment — install and update component releases, create
+    and configure instances, start/stop/restart them, read logs, manage remote
+    hosts over SSH/SFTP, and snapshot dataviews. It is the modern replacement for
+    the legacy gatewayctl / netprobectl shell scripts, and it emulates their
+    syntax when invoked under those names.
+install:
+  - method: direct binary download
+    commands:
+      - 'mkdir -p ${HOME}/bin && cd ${HOME}/bin'
+      - 'curl -OL https://github.com/ITRS-Group/cordial/releases/latest/download/geneos'
+      - 'chmod +x ./geneos'
+      - 'export PATH="$HOME/bin:$PATH"'
+      - 'geneos version'
+    note: >-
+      The documented URL is the unpinned `releases/latest/download` redirect, so a
+      user following the instructions cannot tell which version they installed
+      until they run `geneos version`.
+  - method: go install
+    command: 'go install github.com/itrs-group/cordial/tools/geneos@latest'
+    note: >-
+      Derived from the module path published on proxy.golang.org, not quoted from
+      ITRS documentation.
+command_structure: 'geneos COMMAND [flags] [TYPE] [NAMES...]'
+concepts:
+  component: A stand-alone Geneos software release — gateway, netprobe, licd, webserver and so on. Referred to as TYPE.
+  instance: A runnable copy of a component with its own working directory and configuration. Referred to as NAME.
+  host: >-
+    Where components are installed. There is always `localhost`; remote hosts are
+    managed over SSH/SFTP through the `hosts` sub-system and addressed as NAME@HOST.
+command_groups:
+  - group: Control instances
+    commands:
+      - 'geneos start'
+      - 'geneos stop'
+      - 'geneos restart'
+      - 'geneos reload (refresh)'
+  - group: Inspect instances
+    commands:
+      - 'geneos list (ls)'
+      - 'geneos ps (status)'
+      - 'geneos show (details)'
+      - 'geneos logs (log)'
+      - 'geneos home'
+      - 'geneos command'
+  - group: Manage instances
+    commands:
+      - 'geneos clean'
+      - 'geneos copy (cp)'
+      - 'geneos move (mv, rename)'
+      - 'geneos disable'
+      - 'geneos enable'
+      - 'geneos protect'
+      - 'geneos reset'
+  - group: Configure instances
+    commands:
+      - 'geneos add'
+      - 'geneos deploy'
+      - 'geneos delete (rm)'
+      - 'geneos backup (save)'
+      - 'geneos restore (load)'
+      - 'geneos import'
+      - 'geneos migrate'
+      - 'geneos revert'
+      - 'geneos rebuild'
+      - 'geneos set'
+      - 'geneos unset'
+  - group: Credentials
+    commands:
+      - 'geneos login'
+      - 'geneos logout'
+  - group: Miscellaneous
+    commands:
+      - 'geneos snapshot'
+      - 'geneos version'
+      - 'geneos init'
+  - group: Component types (each is also a sub-command)
+    commands:
+      - 'geneos gateway'
+      - 'geneos netprobe'
+      - 'geneos san'
+      - 'geneos floating'
+      - 'geneos minimal'
+      - 'geneos router'
+      - 'geneos licd'
+      - 'geneos webserver'
+      - 'geneos ac2'
+      - 'geneos ca3'
+      - 'geneos fa2'
+      - 'geneos fileagent'
+      - 'geneos sso-agent'
+      - 'geneos md-gateway'
+      - 'geneos tr-gateway'
+key_flows:
+  - name: Adopt an existing installation
+    steps:
+      - 'geneos config set geneos=/path/to/geneos   # typically /opt/itrs or /home/geneos'
+      - 'geneos list'
+    note: 'Skippable if ITRS_HOME is already set. `geneos list` is read-only and risk-free.'
+  - name: Stand up a demo environment from scratch
+    steps:
+      - 'geneos init demo -u your-email@example.com'
+    note: >-
+      Requires a registered ITRS account for the software download. This is the
+      closest thing Geneos has to a sandbox — see sandbox/geneos-sandbox.yml.
+  - name: Migrate off the legacy *ctl scripts
+    steps:
+      - 'geneos migrate -X    # renames *ctl to .orig and symlinks them to geneos'
+      - 'geneos revert -X     # reverses it'
+    note: '`gatewayctl all start` is translated to `geneos start gateway all`.'
+  - name: Snapshot a dataview from the command line
+    steps:
+      - 'geneos snapshot ...'
+    note: >-
+      Backed by pkg/geneos/commands, which speaks the Gateway REST command
+      service. This is the CLI path to the same surface as
+      POST /rest/snapshot/dataview.
+related_tools:
+  - name: gdna
+    description: Geneos Dynamic Netprobe Analysis
+  - name: dv2email
+    description: Send a Dataview as an email
+  - name: files2dv
+    description: Scan directories and files for information
+  - name: gateway-reporter
+    description: Generate monitoring coverage reports from Gateway setup files
+  - name: libemail
+    description: Drop-in replacement for the legacy libemail action library
+  - name: san-config
+    description: Dynamic Self-Announcing Netprobe configuration file server (not yet fully integrated)
+instance_protection:
+  note: >-
+    `geneos protect` marks instances as protected, blocking destructive commands
+    against them. It is the one guard-rail in the CLI's own surface and is worth
+    setting before any automation drives `geneos` against production instances.

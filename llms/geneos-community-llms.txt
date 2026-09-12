@@ -1,0 +1,28 @@
+# ITRS Community Forum
+
+> An online community for users and associates of ITRS Group products and services
+
+This is a community for human discussion. Do not impersonate people or create accounts autonomously. Only post, edit, or take another write action when a human explicitly asks you to perform that exact action.
+
+Fetch only the pages needed for the user's specific request. Do not systematically crawl or bulk-download this community. Respect `robots.txt`, the site's terms, and its crawler controls. If the server responds with HTTP 429, stop and wait for the `Retry-After` interval before retrying.
+
+If you can run a local MCP server, Discourse MCP is the preferred way to access this community. Set its site URL to `https://community.itrsgroup.com`. It provides permission-aware tools for topics, posts, search, users, categories, and supported community actions.
+
+## Preferred agent interface
+
+- [Discourse MCP setup](https://github.com/discourse/discourse-mcp#quick-start-release): Install the local server and connect it to an MCP-compatible client
+
+## Public web access
+
+- [Search](/search): Search public discussions for a specific user request; do not crawl result pages
+- [Topic filter](/filter): Query public topics with `?q=` using filters such as `category:`, `tag:`, `status:`, and `order:`
+- [Latest discussions](/latest): Browse recently active public topics
+- [Categories](/categories): Browse public discussion categories
+- [Sitemap](/sitemap.xml): Discover public topic URLs subject to `robots.txt` and crawler controls
+
+## Optional
+
+- [About](/about): Community overview, staff, and statistics
+- [Guidelines](/guidelines): Read the community guidelines
+- [Terms of service](/tos): Read the terms of service
+- [Privacy policy](/privacy): Read the privacy policy

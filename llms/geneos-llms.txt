@@ -1,0 +1,88 @@
+# Geneos (ITRS Group)
+
+> Geneos is ITRS Group's real-time monitoring and observability platform for trading systems,
+> applications and infrastructure. It is customer-deployed software, not a hosted API: Netprobes
+> collect telemetry at the edge, Gateways aggregate and apply rules, and each tier exposes its own
+> programmable surface on the customer's own hosts.
+
+<!--
+generated: '2026-09-12'
+method: generated
+source: apis.yml + openapi/geneos-netprobe-rest-api-openapi.yml + docs.itrsgroup.com
+note: ITRS Group publishes no llms.txt for Geneos or its documentation host. The only llms.txt found
+      anywhere on ITRS infrastructure is the Discourse-generated one at community.itrsgroup.com/llms.txt,
+      saved verbatim beside this file as geneos-community-llms.txt. This file is API Evangelist's
+      generated index of the Geneos programmable surface; it is not published by ITRS Group.
+-->
+
+## What an agent can actually call
+
+Geneos has no public, callable endpoint. Every base URL below is a host the *customer* runs. An agent
+working with Geneos is working inside an enterprise network against a Netprobe or a Gateway that a
+human has already deployed, licensed and configured.
+
+## Machine-readable contracts
+
+- [Netprobe REST API (OpenAPI 3.0)](https://docs.itrsgroup.com/docs/geneos/api-sources/v1/rest-api.yaml):
+  the one published specification. 6 operations, PUT/DELETE on dataviews, rows and streams plus a
+  health check. Base `http://{netprobeHost}:7136/v1` (HTTPS 7137 in secure mode).
+- [Netprobe REST API reference (ReDoc)](https://docs.itrsgroup.com/docs/geneos/5.14.0/api/rest-api/?v=/v1/rest-api.yaml)
+
+## Documented but unspecified surfaces
+
+- [Gateway REST command service](https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#rest-service):
+  POST JSON to `/rest/runCommand`, `/rest/runCommandOnMultipleTargets`, `/rest/commands/all`,
+  `/rest/commands/available`, `/rest/xpaths/match`, `/rest/xpaths/commandTargets`,
+  `/rest/snapshot/dataview`, `/rest/setup/validate`, `/rest/gatewayinfo/timezone`, `/rest/authorize`.
+  JSON or `text/event-stream` (Server-Sent Events) responses. Disabled by default. No OpenAPI exists.
+- [XML-RPC Instrumentation API](https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html):
+  30 documented methods (`entity.sampler.createView`, `entity.sampler.view.updateTableRow`,
+  `entity.sampler.stream.addMessage`, `_netprobe.samplerExists`, `_gateway.addManagedEntity`, …) over
+  XML-RPC on the Netprobe's Gateway port. Neither encrypted nor authenticated by default.
+- [Toolkit (Scripting) plug-in](https://docs.itrsgroup.com/docs/geneos/current/collection/toolkit-plugin/index.html):
+  any executable emitting CSV on stdout becomes a sampler.
+- [Web Dashboard](https://docs.itrsgroup.com/docs/geneos/current/visualization/web-dashboard/index.html)
+
+## Authentication
+
+- Gateway REST: HTTP Basic (username/password configured in the Gateway setup) **or** an SSO bearer
+  token obtained from `GET /rest/authorize`. System logins are not supported for REST.
+- Netprobe REST plug-in: no securitySchemes are declared in the OpenAPI. Optional mutual TLS — set
+  `Verify client certificate` and a `Client CA certificate` path on the sampler.
+- XML-RPC: no authentication. Access is restricted by host allow-list (`TRUSTED_API_HOSTS`); calls
+  from other hosts fail with `HOST_NOT_TRUSTED`.
+- See `authentication/geneos-authentication.yml` in this repository.
+
+## Errors
+
+- Gateway REST HTTP codes: 200, 400 (malformed JSON or missing mandatory field), 403 (bad credentials
+  or insufficient permission), 404 (REST service not running, or insecure request to a secure port),
+  500 (the command itself errored). Errors return `{"error": "..."}`.
+- XML-RPC named error codes: `GATEWAY_NOT_CONNECTED`, `NO_SUCH_SAMPLER`, `NO_SUCH_VIEW`,
+  `NO_SUCH_ROW`, `NO_SUCH_CELL`, `NO_SUCH_HEADLINE`, `NO_SUCH_STREAM`, `VIEW_EXISTS`, `ROW_EXISTS`,
+  `COLUMN_EXISTS`, `HEADLINE_EXISTS`, `COLUMN_MISMATCH`, `LIMIT_REACHED`, `STREAM_BUFFER_FULL`,
+  `NUMBER_OUT_OF_RANGE`, `SAMPLER_PARAM_NOT_FOUND`, `VIEW_AND_GROUP_EQUAL`, `GATEWAY_NOT_SUPPORTED`,
+  `HOST_NOT_TRUSTED`. See `errors/geneos-problem-types.yml`.
+
+## First-party tooling
+
+- [cordial](https://github.com/ITRS-Group/cordial) — Go monorepo, `v1.29.2` (2026-09-09). Ships the
+  `geneos` CLI plus Go packages for XML-RPC (`pkg/geneos/xmlrpc`), Gateway REST commands
+  (`pkg/geneos/commands`) and XPath handling (`pkg/geneos/xpath`).
+- [geneos-toolkit](https://crates.io/crates/geneos-toolkit) — Rust, `0.4.2` (2026-06-10).
+- [geneos-xtender](https://github.com/ITRS-Group/geneos-xtender) — Rust, `0.10.0` (2025-04-29),
+  GitHub releases only.
+
+## Docs and support
+
+- [Geneos documentation](https://docs.itrsgroup.com/docs/geneos/) — current release 7.11.x
+- [Quickstart](https://docs.itrsgroup.com/docs/geneos/current/getting-started/quickstart/index.html)
+- [Release notes](https://docs.itrsgroup.com/docs/all/geneos/7x-geneos-release-notes/index.html) —
+  new versions every two months
+- [Support portal](https://support.itrsgroup.com) · [Community forum](https://community.itrsgroup.com/)
+- [Security Center](https://www.itrsgroup.com/about/security-center) — ISO/IEC 27001
+
+## Not published
+
+No pricing page, no status page, no public MCP server, no A2A agent card, no `/.well-known/` documents,
+no AsyncAPI, no Postman collection, no gRPC or WSDL contract. All probed 2026-09-12.

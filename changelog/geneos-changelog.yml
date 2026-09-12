@@ -1,0 +1,95 @@
+generated: '2026-09-12'
+method: searched
+source: https://docs.itrsgroup.com/docs/all/geneos/7x-geneos-release-notes/index.html
+docs:
+  - https://docs.itrsgroup.com/docs/all/geneos/7x-geneos-release-notes/index.html
+  - https://docs.itrsgroup.com/docs/all/whats-new/geneos-whats-new/index.html
+  - https://github.com/ITRS-Group/cordial/releases
+specification: API Commons ChangeLog
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+scheme: MAJOR.MINOR.PATCH per product release, dated
+cadence: 'New versions are released every two months; patch releases land between minors.'
+current_version: 7.11.2
+current_released: '2026-09-10'
+format: dated HTML release notes, versioned per release tree; no RSS/Atom feed, no JSON feed
+note: >-
+  ITRS publishes a Geneos release-notes page and a separate "What's New" page,
+  both dated and both public. There is no machine-readable feed, so an agent or a
+  consumer has to scrape the HTML. Entries below are the recent window read on
+  2026-09-12; this is not the full history.
+entries:
+  - version: 7.11.2
+    date: '2026-09-10'
+    type: patch
+  - version: 7.11.1
+    date: '2026-08-05'
+    type: patch
+  - version: 7.11.0
+    date: '2026-07-30'
+    type: minor
+  - version: 7.10.2
+    date: '2026-07-09'
+    type: patch
+  - version: 7.10.1
+    date: '2026-07-01'
+    type: patch
+  - version: 7.10.0
+    date: '2026-05-28'
+    type: minor
+  - version: 7.9.1
+    date: '2026-05-06'
+    type: patch
+  - version: 7.9.0
+    date: '2026-04-15'
+    type: minor
+    breaking: true
+    highlights:
+      - 'Active Console 7.9.0: idle SSO users are now automatically logged out.'
+  - version: 7.8.3
+    date: '2026-03-18'
+    type: patch
+  - version: 7.8.2
+    date: '2026-03-04'
+    type: patch
+    note: >-
+      7.8.0 is the floor for Licence Daemon support — support for versions earlier
+      than 7.8.0 ended 31 July 2026.
+earlier_breaking_changes:
+  - version: 7.7.0
+    components:
+      - Gateway
+      - Netprobe
+    change: >-
+      A default row limit of 200 rows is now enforced for certain plugins where no
+      limit was previously configured.
+related_changelogs:
+  - name: cordial (geneos CLI and Go packages)
+    url: https://github.com/ITRS-Group/cordial/blob/main/CHANGELOG.md
+    releases: https://github.com/ITRS-Group/cordial/releases
+    current: v1.29.2
+    released: '2026-09-09'
+    recent:
+      - version: v1.29.2
+        date: '2026-09-09'
+        title: 'Fix `geneos init demo`'
+      - version: v1.29.1
+        date: '2026-09-04'
+        title: 'Add new Netprobe Router component to `geneos` and more'
+      - version: v1.29.0
+        date: '2026-09-03'
+        title: 'WITHDRAWN — Support for Netprobe Router and more'
+      - version: v1.28.2
+        date: '2026-07-30'
+        title: 'Fix initial gateway deployment configurations'
+      - version: v1.28.1
+        date: '2026-07-14'
+        title: 'Minor fixes and one update'
+api_changelog:
+  published: false
+  note: >-
+    No changelog exists for the API surfaces specifically. The Netprobe REST
+    API's OpenAPI has carried `info.version: 1.0.0` unchanged, and neither the
+    Gateway REST service nor the XML-RPC API versions itself, so an integrator has
+    to read the whole product release notes to learn whether an interface moved.

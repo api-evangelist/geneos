@@ -1,0 +1,119 @@
+generated: '2026-09-12'
+method: derived
+source: openapi/geneos-netprobe-rest-api-openapi.yml + docs.itrsgroup.com Gateway REST service reference
+specification: API Commons MCPServer
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+status: candidate
+deployment:
+  mode: none
+  auth: unknown
+  verified: searched
+note: >-
+  ITRS Group ships NO MCP server for Geneos — hosted or stdio. Searched the ITRS
+  GitHub organisation (69 repositories, none MCP), the Geneos documentation, the
+  ITRS website and the web on 2026-09-12 and found nothing. No `type: MCPServer`
+  pointer is wired in apis.yml; emitting one against a derived candidate would
+  credit ITRS with an agent surface it does not publish. The only MCP mention
+  anywhere on ITRS infrastructure is in the Discourse-generated llms.txt at
+  community.itrsgroup.com, which points at the third-party `discourse-mcp`
+  server for the community forum — that is Discourse's server, not ITRS's, and
+  it exposes forum topics, not Geneos monitoring.
+  The tools below are a CANDIDATE surface derived from the operations ITRS does
+  publish. Nobody serves them. They exist so that the shape of a future Geneos
+  MCP server is on record and so the gap is visible.
+candidate_tools:
+  - name: geneos_upsert_dataview
+    description: Create or update a dataview on a Geneos Netprobe REST API sampler.
+    backing:
+      api: geneos:netprobe-rest-api
+      method: PUT
+      path: /managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}
+    consequence: write
+    reversible_by: geneos_delete_dataview
+  - name: geneos_delete_dataview
+    description: Delete a dataview from a Netprobe REST API sampler.
+    backing:
+      api: geneos:netprobe-rest-api
+      method: DELETE
+      path: /managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}
+    consequence: destructive
+  - name: geneos_upsert_dataview_row
+    description: Create or update a single row in a dataview.
+    backing:
+      api: geneos:netprobe-rest-api
+      method: PUT
+      path: /managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}/row/{row}
+    consequence: write
+    reversible_by: geneos_delete_dataview_row
+  - name: geneos_delete_dataview_row
+    description: Delete a row from a dataview.
+    backing:
+      api: geneos:netprobe-rest-api
+      method: DELETE
+      path: /managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}/row/{row}
+    consequence: destructive
+  - name: geneos_write_stream
+    description: Create or update a stream on a Netprobe REST API sampler, for consumption by FKM and other stream plug-ins.
+    backing:
+      api: geneos:netprobe-rest-api
+      method: PUT
+      path: /managedEntity/{me}/sampler/{sampler}(type)/stream/{stream}
+    consequence: write
+  - name: geneos_healthcheck
+    description: Check that the Netprobe REST API plug-in is listening and healthy.
+    backing:
+      api: geneos:netprobe-rest-api
+      method: GET
+      path: /healthcheck
+    consequence: read
+  - name: geneos_snapshot_dataview
+    description: >-
+      Fetch a dataview's current values, severity status and snooze status from a
+      Geneos Gateway.
+    backing:
+      api: geneos:gateway-rest
+      method: POST
+      path: /rest/snapshot/dataview
+    consequence: read
+    note: Documented in prose only; no OpenAPI operation exists to bind to.
+  - name: geneos_list_commands
+    description: List all commands known to a Gateway, or the commands available on a given target.
+    backing:
+      api: geneos:gateway-rest
+      method: GET|POST
+      path: /rest/commands/all, /rest/commands/available
+    consequence: read
+    note: Documented in prose only; no OpenAPI operation exists to bind to.
+  - name: geneos_run_command
+    description: >-
+      Run a named Geneos command (for example /SNOOZE:manual or /GATEWAY:reloadSetup)
+      against an XPath target on a Gateway.
+    backing:
+      api: geneos:gateway-rest
+      method: POST
+      path: /rest/runCommand
+    consequence: destructive
+    note: >-
+      Documented in prose only. This is the highest-consequence Geneos surface —
+      commands include restarting Netprobes, rolling back probe versions and
+      reloading Gateway setup — and it is neither idempotent nor reversible. Any
+      real MCP server exposing it needs an explicit escalation gate.
+  - name: geneos_validate_setup
+    description: Obtain a report listing validation issues for a running Gateway's setup.
+    backing:
+      api: geneos:gateway-rest
+      method: GET
+      path: /rest/setup/validate
+    consequence: read
+    note: Documented in prose only; no OpenAPI operation exists to bind to.
+gaps:
+  - >-
+    The XML-RPC Instrumentation API's 30 methods are not represented above. They
+    are a publishing surface for in-house applications rather than an agent
+    surface, and XML-RPC is not a natural MCP transport.
+  - >-
+    No crosswalk file is emitted. mcp/<slug>-tool-crosswalk.yml is only written
+    when a real MCP server (or GraphQL endpoint) coexists with an OpenAPI. Here
+    there is no MCP server, so there is nothing to cross-walk against.

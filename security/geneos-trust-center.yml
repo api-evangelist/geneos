@@ -1,0 +1,45 @@
+generated: '2026-09-12'
+method: searched
+source: https://www.itrsgroup.com/about/security-center
+specification: API Commons TrustCenter
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+trust_center:
+  published: true
+  url: https://www.itrsgroup.com/about/security-center
+  name: ITRS Security Center
+  http_status: 200
+  probed: '2026-09-12'
+  type: marketing-page
+  note: >-
+    probe-security-programs.py reported `trust=none` because there is no
+    trust.itrsgroup.com and no hosted trust-portal product (Vanta, Drata,
+    SafeBase and similar). ITRS does publish a first-party security page at
+    /about/security-center that names a certification and gives a reporting
+    route, so it is recorded here as a page-shaped trust centre rather than a
+    portal. Found by reading the www.itrsgroup.com sitemap, which is why the
+    automated probe missed it.
+certifications:
+  - name: ISO/IEC 27001
+    status: claimed
+    certificate_url: https://www.uptrends.com/downloads/ITRS-Group-Certificate.pdf
+    quote: >-
+      Named on the page as "an internationally recognized standard" that the ITRS
+      security programme aligns with, with a downloadable certificate.
+    scope: ITRS Group corporate
+not_published:
+  - SOC 2 Type I or Type II
+  - ISO 9001
+  - PCI DSS
+  - HIPAA
+  - FedRAMP
+  - Cyber Essentials / Cyber Essentials Plus
+  - subprocessor list
+  - penetration-test summary
+  - uptime or availability commitments
+note: >-
+  Geneos runs inside the customer's own estate, so the trust surface a buyer
+  needs here is about the vendor's engineering and supply chain rather than about
+  a shared multi-tenant service. What ITRS publishes covers the certification but
+  not the artefacts an enterprise security review normally asks for next.

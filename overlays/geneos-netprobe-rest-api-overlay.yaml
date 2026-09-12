@@ -1,0 +1,93 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Geneos Netprobe REST API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-09-12'
+  method: generated
+  source: openapi/geneos-netprobe-rest-api-openapi.yml
+  extends: openapi/geneos-netprobe-rest-api-openapi.yml
+  original: openapi/_original/geneos-netprobe-rest-api.yaml
+  note: >-
+    ITRS Group's published spec is complete and valid but carries no
+    operationIds, no securitySchemes and no servers block. This overlay records
+    the enhancements API Evangelist would apply, so the provider's own document
+    stays untouched. Applying it does NOT change the score the scorer computes
+    from the original — the scorer reads the original. It exists so the gaps are
+    explicit and so a follow-up request to ITRS has something concrete to point
+    at. The operationIds proposed below are API Evangelist's naming, not ITRS
+    Group's; nothing here is presented as published by the provider.
+actions:
+  - target: $.paths['/managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}'].put
+    description: Name the dataview upsert operation.
+    update:
+      operationId: upsertDataview
+      x-consequence: write
+      x-reversible-by: deleteDataview
+  - target: $.paths['/managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}'].delete
+    description: Name the dataview delete operation and record its missing error responses.
+    update:
+      operationId: deleteDataview
+      x-consequence: destructive
+      x-note: >-
+        Declares only a 200. The sibling PUT declares 400/404/500 and the same
+        failure modes apply here, so a client cannot tell from the contract what
+        a delete against a missing sampler returns.
+  - target: $.paths['/managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}/row/{row}'].put
+    description: Name the row upsert operation.
+    update:
+      operationId: upsertDataviewRow
+      x-consequence: write
+      x-reversible-by: deleteDataviewRow
+  - target: $.paths['/managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}/row/{row}'].delete
+    description: Name the row delete operation.
+    update:
+      operationId: deleteDataviewRow
+      x-consequence: destructive
+  - target: $.paths['/managedEntity/{me}/sampler/{sampler}(type)/stream/{stream}'].put
+    description: Name the stream write operation.
+    update:
+      operationId: upsertStream
+      x-consequence: write
+      x-note: >-
+        Not reversible. A message written to a stream is consumed by a downstream
+        sampler (FKM and similar) or purged when no consumer is attached; there
+        is no delete or recall operation.
+  - target: $.paths['/healthcheck'].get
+    description: Name the health check operation.
+    update:
+      operationId: getHealthcheck
+      x-consequence: read
+  - target: $
+    description: >-
+      Record the transport security the plug-in actually supports. The Netprobe
+      REST plug-in can require a client certificate ("Verify client certificate"
+      plus a "Client CA certificate" path on the sampler), which is mutual TLS,
+      but the published document declares no securitySchemes at all.
+    update:
+      components:
+        securitySchemes:
+          netprobeMutualTLS:
+            type: mutualTLS
+            description: >-
+              Optional. Enabled per sampler by setting "Verify client certificate"
+              and supplying a "Client CA certificate" path; the Netprobe must be
+              started in secure mode with -secure, -ssl-certificate and
+              -ssl-certificate-key. When not enabled the plug-in accepts
+              unauthenticated requests from any host that can reach the port.
+              Source: https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html#plugin-configuration
+  - target: $
+    description: Record the documented operational limits that the contract omits.
+    update:
+      x-documented-limits:
+        dataview_row_limit:
+          default: 200
+          configurable_as: Row limit (sampler) / Operating environment > Custom dataview max rows (Gateway-wide)
+          source: https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html#plugin-configuration
+        stream_buffer_size:
+          default: 1000
+          unit: messages
+          behaviour: >-
+            When the buffer is full the sampler drops the earliest messages and
+            counts them in the totalMessagesLost column of the Streams Dataview.
+          source: https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html#plugin-configuration

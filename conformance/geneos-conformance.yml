@@ -1,0 +1,139 @@
+generated: '2026-09-12'
+method: searched
+source: >-
+  openapi/_original/geneos-netprobe-rest-api.yaml,
+  https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html,
+  https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html,
+  https://www.itrsgroup.com/about/security-center
+specification: API Commons Conformance
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+conformance:
+  - id: openapi-3.0
+    conforms: true
+    evidence: >-
+      openapi/_original/geneos-netprobe-rest-api.yaml declares `openapi: 3.0.0`
+      and parses. Published by ITRS at
+      https://docs.itrsgroup.com/docs/geneos/api-sources/v1/rest-api.yaml
+  - id: xml-rpc
+    conforms: true
+    evidence: >-
+      "Geneos API clients communicate with the API plug-ins using the industry
+      standard, well defined XML-RPC protocol over TCP/IP… The API plug-in acts as
+      an XML-RPC server." ITRS cites the XML-RPC specification directly
+      (http://xmlrpc.scripting.com/spec.html) and notes the specification's method
+      name character restrictions apply.
+      https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
+  - id: sse
+    conforms: true
+    evidence: >-
+      The Gateway REST command service emits command output as W3C Server-Sent
+      Events when the client sends `Accept: text/event-stream`.
+      https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#command-output-stream
+    deviations:
+      - >-
+        No event ids and no event types are sent, and the Gateway does not support
+        reconnecting to a stream — a reconnect reruns the command. SSE's
+        Last-Event-ID resumption is therefore unavailable.
+  - id: http-basic-auth
+    conforms: true
+    evidence: >-
+      Gateway REST accepts HTTP basic access authentication.
+      https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#user-authentication
+  - id: bearer-token
+    conforms: true
+    evidence: >-
+      SSO access tokens are supplied as `Authorization: Bearer <token>` and
+      obtained from /rest/authorize.
+  - id: mutual-tls
+    conforms: true
+    evidence: >-
+      The Netprobe REST API plug-in can require and verify client certificates
+      against a configured CA path.
+      https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html#plugin-configuration
+  - id: iso-27001
+    conforms: true
+    evidence: >-
+      ITRS Group states its security programme aligns with ISO/IEC 27001 and
+      publishes a certificate at
+      https://www.uptrends.com/downloads/ITRS-Group-Certificate.pdf — linked from
+      https://www.itrsgroup.com/about/security-center
+    scope: ITRS Group corporate, not a Geneos-specific attestation.
+  - id: rfc9457
+    conforms: false
+    evidence: >-
+      No surface returns application/problem+json. Gateway REST returns
+      {"error": "..."}; XML-RPC returns named fault codes. See
+      errors/geneos-problem-types.yml.
+  - id: oauth2
+    conforms: false
+    evidence: >-
+      No OAuth 2.0 authorization server, no scopes, no grant flow. SSO tokens are
+      issued by an ITRS SSO Agent or Gateway Hub, not by an OAuth 2.0 endpoint
+      this pipeline could discover. /.well-known/oauth-authorization-server 404s
+      on every ITRS host.
+  - id: oidc
+    conforms: false
+    evidence: /.well-known/openid-configuration returns 404 on every ITRS host probed 2026-09-12.
+  - id: idempotency
+    conforms: partial
+    evidence: >-
+      PUT/DELETE verb semantics across the Netprobe REST API's whole mutating
+      surface; no Idempotency-Key mechanism, and no replay protection on the
+      Gateway command service. See conventions/geneos-conventions.yml
+      idempotency.coverage.
+  - id: pagination
+    conforms: false
+    evidence: No endpoint paginates; list responses are returned whole.
+  - id: soc2
+    conforms: false
+    evidence: >-
+      Not claimed. https://www.itrsgroup.com/about/security-center names ISO/IEC
+      27001 only — no SOC 2, PCI DSS, HIPAA, FedRAMP or Cyber Essentials claim
+      appears there.
+domain_standard:
+  declared_in_contract: false
+  note: >-
+    REWARD-ONLY check, honestly scored as absent. Geneos's market is IT
+    monitoring and observability, and the contract Geneos publishes declares no
+    domain standard for it — the Netprobe REST API is a bespoke dataview
+    publishing shape with no OpenTelemetry, OpenMetrics or Prometheus exposition
+    semantics in it. That is a real finding: Geneos ingests those standards
+    rather than speaking them outward.
+  adjacent_standards_consumed:
+    - standard: OpenTelemetry
+      role: consumed
+      evidence: https://docs.itrsgroup.com/docs/geneos/collection/opentelemetry/current/user-guide/opentelemetry/index.html
+    - standard: Prometheus exposition / Alertmanager
+      role: consumed
+      evidence: https://docs.itrsgroup.com/docs/geneos/collection/prometheus/current/user-guide/prometheus/index.html
+    - standard: StatsD
+      role: consumed
+      evidence: https://docs.itrsgroup.com/docs/geneos/collection/statsd/current/user-guide/statsd-java/index.html
+    - standard: SNMP (MIBMON, Trapmon)
+      role: consumed
+      evidence: https://docs.itrsgroup.com/docs/geneos/current/index.html
+    - standard: FIX Protocol
+      role: consumed
+      evidence: >-
+        FIX Analyser 2 and the Message Tracker FIX adapter parse FIX sessions for
+        monitoring. https://www.itrsgroup.com/technologies/fix-monitoring
+    - standard: Nagios plugin protocol
+      role: consumed
+      evidence: https://github.com/ITRS-Group/geneos-xtender
+  note_on_role: >-
+    Each entry above is a collection plug-in — Geneos reads these formats off the
+    monitored estate. None of them is declared by a Geneos contract as its own
+    interface shape, so none of them satisfies domain_standard_conformance. They
+    are recorded here so the distinction stays explicit rather than being
+    mistaken for a conformance claim in a later pass.
+compliance:
+  certifications:
+    - name: ISO/IEC 27001
+      status: claimed
+      certificate: https://www.uptrends.com/downloads/ITRS-Group-Certificate.pdf
+      source: https://www.itrsgroup.com/about/security-center
+  note: >-
+    One named certification, published with a downloadable certificate. No trust
+    portal, no SOC 2 report request flow, no subprocessor list found.

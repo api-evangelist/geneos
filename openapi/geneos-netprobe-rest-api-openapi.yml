@@ -1,0 +1,365 @@
+# Harvested verbatim from the ITRS Group Geneos documentation and republished here with a
+# servers[] block added from the provider's own documented listening ports (roadmap#122).
+# The untouched original is openapi/_original/geneos-netprobe-rest-api.yaml.
+# generated: '2026-09-12'
+# method: searched
+# source: https://docs.itrsgroup.com/docs/geneos/api-sources/v1/rest-api.yaml
+openapi: 3.0.0
+info:
+  title: Netprobe REST API
+  version: 1.0.0
+  description: "## Overview\n\nThis is the REST API of the Netprobe. The Netprobe is Geneos' data collection\
+    \ component, therefore the API endpoints are all related to publishing data to the Netprobe. The REST\
+    \ API for retrieving data from Geneos is on the Gateway Hub.\n\nThe Netprobe API is implemented as\
+    \ a plug-in. It is available beginning GA4.12.x. Users may create multiple instances of the plug-in\
+    \ (samplers) and add them to Managed entities. When publishing data to the API, the Managed entity\
+    \ name and sampler name must be specified for each REST endpoint. The corresponding Managed entity\
+    \ and sampler must already exist.\n\nYou may put multiple REST API samplers with the same name on\
+    \ the same Managed entity via different types. In this case the type needs to be specified in the\
+    \ URL in parentheses. For example:\n\n`/myHost:myPort/v1/managedEntity/myManagedEntity/sampler/mySampler(myType)/stream/myStream`\n\
+    \nThe type can be omitted from the endpoint if the sampler name is unambiguous.\n> **Caution:** Depending\
+    \ on the rate of incoming requests, the REST API plug-in may be resource-intensive and can cause the\
+    \ Netprobe to reach its memory protection ratio. In cases where you encounter Netprobe restarts, consider\
+    \ increasing the memory protection ratio. For guidance, see [Netprobe Memory Protection Settings](https://docs.itrsgroup.com/docs/geneos/4.13.0/Netprobe/general/netprobe-memory-protection-settings.html).\
+    \ \n\n> Following RESTful API best practice, resource names must be unique. Avoid giving your samplers\
+    \ and dataviews the same name. Doing so could result in errors.\n\n## Outputs\nThe REST API can output\
+    \ the data into two formats:\n- As a dataview — accepts JSON content.\n- As a stream — accepts any\
+    \ message type, regardless of format.\n\nFor detailed examples of endpoints and their output dataviews\
+    \ and streams, see the [REST API Plug-in Technical Reference](https://docs.itrsgroup.com/docs/geneos/4.13.0/Netprobe/api/rest-api-plug-in-tr.html).\n\
+    \n## Listening port\nThe listening ports are provided on the probe level.\n\nAll REST API samplers\
+    \ share the same HTTP and HTTPS ports. By default, the ports are `7136` (HTTP) and `7137` (HTTPS).\n\
+    \nIf you wish to configure the listening ports or use an HTTPS connection for the REST API sampler,\
+    \ see [probes > probe > restApiHttpPort](https://docs.itrsgroup.com/docs/geneos/4.13.0/Gateway_Reference_Guide/gateway_probes.htm#probe-restApiHttpPort)\
+    \ and [probes > probe > restApiHttpsPort in Probes](https://docs.itrsgroup.com/docs/geneos/4.13.0/Gateway_Reference_Guide/gateway_probes.htm#probe-restApiHttpsPort).\n\
+    \n## Versioning \nThe API will be versioned. Versioning started with v1. Breaking changes will increment\
+    \ the version number.\n\nAdding new API endpoints is allowed without incrementing the version.\n\n\
+    ## Licence and version requirements\nUsage of the REST API plug-in requires you to upgrade to the\
+    \ GA4.12.x Netprobe.\n\nIn addition, the Gateway must connect to the GA4.12.x Licence Daemon to validate\
+    \ the Gateway schema and tokens. For guidance, see [Geneos Licence Daemon](https://docs.itrsgroup.com/docs/geneos/4.13.0/LicenceDaemon/index.html).\n\
+    \n"
+  contact:
+    url: http://www.itrsgroup.com
+servers:
+- url: http://{netprobeHost}:{httpPort}/v1
+  description: Netprobe REST API plug-in listening port. Geneos is customer-deployed, so the host is the
+    machine running the Netprobe; the default insecure port is 7136 and the default secure (HTTPS) port
+    is 7137. Documented at https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html#configure-the-listening-port-on-the-probe
+  variables:
+    netprobeHost:
+      default: localhost
+      description: Host name or IP address of the machine running the Netprobe with a rest-api sampler.
+    httpPort:
+      default: '7136'
+      description: REST API plug-in listening port. Default HTTP 7136; default HTTPS 7137 when the Netprobe
+        is started in secure mode.
+paths:
+  /managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}:
+    put:
+      tags:
+      - REST API
+      responses:
+        '200':
+          description: Updates the dataview with payload
+        '400':
+          description: 'Resource found, but unable to update
+
+
+            Reason Phrase
+
+            - Unable to create or update dataview
+
+            - Request has no body'
+        '404':
+          description: Unable to create resource
+        '500':
+          description: Failed to create update dataview due to server error (e.g. unhandled null pointer
+            exception)
+      summary: Create or update a dataview
+      description: 'Creates a new dataview to output the JSON content being received.
+
+
+        If the dataview name already exists, then the sampler updates the existing dataview.'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeneosDataview'
+            examples:
+              Create or Update Dataview:
+                value:
+                - column1: dataA1
+                  column2: dataA2
+                  column3: dataA3
+                - column1: dataB1
+                  column2: dataB2
+                  column3: dataB3
+                - column1: dataC1
+                  column2: dataC2
+                  column3: dataC3
+        required: true
+    delete:
+      tags:
+      - REST API
+      responses:
+        '200':
+          description: Deleted
+      summary: Delete a dataview
+      description: Deletes an existing dataview.
+    parameters:
+    - name: Column-Order
+      description: "Specifies the order of the columns that appear in the dataview based on the fields\
+        \ on the JSON response.\n\nThe value should be a comma-separated list of JSON field names and\
+        \ contain at least one field.\n\n-   The fields appear on the dataview in the order that you define.\
+        \ That is, the first field appears as the first column, the second field appears as the second\
+        \ column, and so on.\n-   You do not need to define all possible fields when using `Column-Order`.\
+        \ However, only those fields that you define are guaranteed to follow an order.\n-   If you define\
+        \ a field in the `Column-Order`, and this field does not appear in the JSON response, then the\
+        \ JSON response displays normally on the dataview, but the column for the missing field is not\
+        \ displayed. In addition, the Netprobe returns a warning message in the log.\n\nThis parameter\
+        \ only applies to the PUT operation. Setting it for other operations will have no effect.\n####\
+        \ Note: \n  When you update the column order for an existing dataview, the dataview does not reflect\
+        \ the change immediately. To see the updated column order, click away from the Metrics dockable\
+        \ on the Active Console 2, then click the Metrics dockable again."
+      schema:
+        type: array
+        items:
+          type: string
+      in: header
+      required: false
+    - name: me
+      description: Name of the managed entity associated with the REST API sampler.
+      schema:
+        type: string
+      in: path
+      required: true
+    - name: sampler
+      description: Name of the REST API sampler to push content to.
+      schema:
+        type: string
+      in: path
+      required: true
+    - name: type
+      description: 'Name of the type that a sampler falls under.
+
+
+        This field is required if a sampler falls under a type and is not unique (for example, if two
+        samplers under different types share the same name).
+
+
+        The open and close parentheses `(` and `)` surrounding the type name are required in the endpoint.'
+      schema:
+        type: string
+      in: path
+      required: false
+    - name: dataview
+      description: 'Name of the dataview to be created, updated, or deleted.
+
+        #### Note:
+
+        You cannot use the name "Streams Dataview" as a dataview name. This name is reserved for displaying
+        stream information on the REST API plug-in. For more information, see [Dataview for Streams in
+        the REST API Plug-in Technical Reference](https://docs.itrsgroup.com/docs/geneos/4.13.0/Netprobe/api/rest-api-plug-in-tr.html#dataview-for-streams). '
+      schema:
+        type: string
+      in: path
+      required: true
+  /managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}/row/{row}:
+    put:
+      tags:
+      - REST API
+      responses:
+        '200':
+          description: Row updated
+        '400':
+          description: 'Row found but unable to update
+
+
+            Reason Phrase
+
+            - Unable to create or update row
+
+            - Request has no body'
+        '404':
+          description: Unable to create new row
+        '500':
+          description: Server error (e.g. null pointer exception)
+      summary: Create or update a row
+      description: 'Creates a new row on an existing dataview. The new row appears with the content of
+        the HTTP body.
+
+
+        If the row name already exists, then the sampler updates the existing row.'
+    delete:
+      tags:
+      - REST API
+      responses:
+        '200':
+          description: Row deleted successfully.
+      summary: Delete a row
+      description: 'Deletes an existing row from the dataview.
+
+
+        If multiple rows share the same name, then the plug-in deletes the first row it finds that matches
+        the name. This includes rows that the Netprobe tags as duplicates.
+
+
+        When you delete a row, you do not need to specify the HTTP body. Any content in the HTTP body
+        is ignored.'
+    parameters:
+    - name: me
+      description: Name of the managed entity associated with the REST API sampler.
+      schema:
+        type: string
+      in: path
+      required: true
+    - name: sampler
+      description: Name of the REST API sampler where the dataview is located
+      schema:
+        type: string
+      in: path
+      required: true
+    - name: type
+      description: 'Name of the type that a sampler falls under.
+
+
+        This field is required if a sampler falls under a type and is not unique (for example, if two
+        samplers under different types share the same name).
+
+
+        The open and close parentheses `(` and `)` surrounding the type name are required in the endpoint.'
+      schema:
+        type: string
+      in: path
+      required: false
+    - name: dataview
+      description: 'Name of the dataview containing the row to be added, updated, or deleted.
+
+
+        The dataview must exit. Otherwise, the request will fail.
+
+        #### Note:
+
+        You cannot use "Streams Dataview" as a dataview name. This name is reserved for displaying stream
+        information on the REST API plug-in. For more information, see [Dataview for Streams in the REST
+        API Plug-in Technical Reference](https://docs.itrsgroup.com/docs/geneos/4.13.0/Netprobe/api/rest-api-plug-in-tr.html#dataview-for-streams). '
+      schema:
+        type: string
+      in: path
+      required: true
+    - name: row
+      description: 'Name of the row to be added, updated, or deleted.
+
+
+        When deleting a row, the row name must already exist. Otherwise, the request will fail.
+
+
+        If multiple rows share the same name, then the plug-in deletes the first row it finds that matches
+        the name. This includes rows that the Netprobe tags as duplicates.'
+      schema:
+        type: string
+      in: path
+      required: true
+  /managedEntity/{me}/sampler/{sampler}(type)/stream/{stream}:
+    put:
+      tags:
+      - REST API
+      responses:
+        '200':
+          description: Written to stream
+        '400':
+          description: 'Stream exists, but unable to update
+
+
+            Reason Phrase
+
+            - Request has no body
+
+            - Stream exists, but unable to update'
+        '404':
+          description: Unable to create stream
+      summary: Create or update a stream
+      description: 'Publishes data to Netprobe streams. Netprobe streams can be used in FKM samplers to
+        scan for keywords and generate alerts.
+
+
+        This endpoint can receive any message type. If the stream name already exists, then the sampler
+        updates the existing stream.
+
+        '
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: array
+              items:
+                type: string
+            examples:
+              Plain text:
+                value: 'This is a valid payload for the stream endpoint
+
+                  This is the 2nd line
+
+                  Multiple lines are supported'
+        required: true
+    parameters:
+    - name: me
+      description: Name of the managed entity associated with the REST API sampler.
+      schema:
+        type: string
+      in: path
+      required: true
+    - name: sampler
+      description: Name of the REST API sampler to push content to.
+      schema:
+        type: string
+      in: path
+      required: true
+    - name: type
+      description: 'Name of the type that a sampler falls under.
+
+
+        This field is required if a sampler falls under a type and is not unique (for example, if two
+        samplers under different types share the same name).
+
+
+        The open and close parentheses `(` and `)` surrounding the type name are required in the endpoint.'
+      schema:
+        type: string
+      in: path
+      required: false
+    - name: stream
+      description: Name of the stream to be created or updated.
+      schema:
+        type: string
+      in: path
+      required: true
+  /healthcheck:
+    get:
+      tags:
+      - REST API
+      responses:
+        '200':
+          description: There is at least one REST API sampler that is configured on the Netprobe and is
+            accepting connections.
+        '500':
+          description: A REST API sampler may be running, but is not ready.
+      summary: Get health check
+      description: "Queries the REST API server for availability.\nIf the server returns a 200 HTTP response\
+        \ code, then it means...\n\n  - One or more REST API samplers are configured to run on the Netprobe.\n\
+        \  - A REST API sampler is ready to accept messages."
+tags:
+- name: REST API
+  description: REST API plug-in
+components:
+  schemas:
+    GeneosDataview:
+      title: Root Type for GeneosDataview
+      description: Geneos Dataview
+      type: array
+      items:
+        type: object
+      example: "[\n{\n \"trace_id\": 1989548194574808800,\n \"name\": \"servlet.request\",\n \"type\"\
+        : \"web\",\n \"status\": \"200\",\n \"duration\": 1004252,\n \"url\": \"http://localhost:8080/bg-button.png\"\
+        ,\n \"thread\": \"http-nio-8080-exec-7\"\n},\n{\n \"trace_id\": 8421096758666453000,\n \"name\"\
+        : \"servlet.request\",\n \"type\": \"web\",\n \"status\": \"200\",\n \"duration\": 901195,\n \"\
+        url\": \"http://localhost:8080/bg-middle.png\",\n \"thread\": \"http-nio-8080-exec-8\"\n}\n]"

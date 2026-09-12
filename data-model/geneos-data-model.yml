@@ -1,0 +1,198 @@
+generated: '2026-09-12'
+method: derived
+source: >-
+  openapi/geneos-netprobe-rest-api-openapi.yml (path parameters and
+  components.schemas), enriched from the XML-RPC technical reference at
+  https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
+  and the Geneos XPath guide at
+  https://docs.itrsgroup.com/docs/geneos/current/processing/gateway-administration/geneos_xpath_ug/index.html
+specification: API Commons DataModel
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+note: >-
+  The published OpenAPI declares exactly one schema, `GeneosDataview`, and it is
+  an untyped array of objects. The real entity graph is not in the contract — it
+  is in the path structure, which mirrors the Geneos object tree, and in the
+  XML-RPC method names, which address the same tree from the other direction.
+  Entities below are derived from those two sources. Nothing is invented: every
+  entity appears as a path segment, an XML-RPC method scope, or a documented
+  dataview column.
+identifiers:
+  style: >-
+    Names, not opaque ids. Every Geneos object is addressed by its configured name
+    within its parent's scope, and the fully-qualified address is a Geneos XPath —
+    e.g. /geneos/gateway[(@name="GW")]/directory/probe[(@name="P")]/managedEntity[(@name="ME")].
+  uniqueness: >-
+    Dataview names must be unique both within and across groups on a sampler, and
+    row names unique within a dataview. The OpenAPI states the rule in prose:
+    "resource names must be unique. Avoid giving your samplers and dataviews the
+    same name."
+  disambiguation: >-
+    Where two samplers share a name under different Types, the type is appended in
+    parentheses — sampler/mySampler(myType). It may be omitted when unambiguous.
+  reserved: >-
+    `_netprobe` and `_gateway` are reserved pseudo-entity names on the XML-RPC API
+    and must not be used as managed entity names.
+entities:
+  - name: Gateway
+    description: >-
+      Aggregation and rules tier. Owns the directory of probes and managed
+      entities, evaluates rules, runs commands, and exposes the REST command
+      service.
+    addressed_by: Geneos XPath root /geneos/gateway[(@name=...)]
+  - name: Probe (Netprobe)
+    description: >-
+      Collection tier running on a monitored host. Hosts samplers, exposes the
+      XML-RPC API and, when the rest-api plug-in is configured, the Netprobe REST
+      API.
+  - name: ManagedEntity
+    description: >-
+      The unit of monitored "thing" — a host, an application, a service. Path
+      parameter `me` on every Netprobe REST API write.
+    from: 'path parameter {me}'
+  - name: Type
+    description: >-
+      Optional grouping that lets the same sampler name be reused under one
+      managed entity.
+    from: 'path segment (type) and XML-RPC sampler(Type) suffix'
+  - name: Sampler
+    description: >-
+      A configured plug-in instance on a managed entity. The rest-api and API
+      samplers are the ones that accept published data.
+    from: 'path parameter {sampler}'
+  - name: Dataview
+    description: >-
+      A named table of monitoring data belonging to a sampler, with headlines and
+      rows. The primary object the REST and XML-RPC APIs create and update.
+    from: 'path parameter {dataview}; schema GeneosDataview'
+  - name: Group
+    description: >-
+      Heading a dataview is filed under. Required on XML-RPC createView and must
+      differ from the view name (VIEW_AND_GROUP_EQUAL otherwise).
+    from: XML-RPC entity.sampler.createView(viewName, groupHeading)
+  - name: Row
+    description: A named row in a dataview.
+    from: 'path parameter {row}'
+  - name: Column
+    description: A named column in a dataview; columns are added before cells can be written.
+    from: XML-RPC entity.sampler.view.addTableColumn
+  - name: Cell
+    description: The intersection of a row and a column.
+    from: XML-RPC entity.sampler.view.updateTableCell
+  - name: Headline
+    description: >-
+      A named scalar variable attached to a dataview, shown above the table.
+      `samplingStatus` and `totalRows` are present on every custom dataview.
+    from: XML-RPC entity.sampler.view.addHeadline
+  - name: Stream
+    description: >-
+      A named message buffer on a sampler. Written by an external application,
+      read by a consuming sampler such as FKM.
+    from: 'path parameter {stream}'
+  - name: Message
+    description: One item written to a stream. Any format; not parsed by the stream itself.
+  - name: SamplerParameter
+    description: >-
+      Name/value pair configured in the Gateway setup and read back by a
+      publishing application. Documented defaults MAX_GM, MAX_GM_ROWS, MAX_GM_COLS.
+    from: XML-RPC entity.sampler.getParameter
+  - name: Command
+    description: >-
+      A named, targetable action a Gateway can run — /SNOOZE:manual,
+      /GATEWAY:reloadSetup, /RMS:rollback and user-defined commands.
+    from: Gateway REST /rest/commands/all
+relationships:
+  - from: Gateway
+    to: Probe
+    type: has_many
+    via: directory
+  - from: Probe
+    to: ManagedEntity
+    type: has_many
+    via: probe assignment on the managed entity
+  - from: ManagedEntity
+    to: Sampler
+    type: has_many
+    via: 'sampler ref (path parameter {sampler})'
+  - from: ManagedEntity
+    to: Type
+    type: has_many
+    via: type assignment
+  - from: Type
+    to: Sampler
+    type: has_many
+    via: 'sampler(Type) disambiguation'
+  - from: Sampler
+    to: Dataview
+    type: has_many
+    via: 'path parameter {dataview}'
+  - from: Sampler
+    to: Stream
+    type: has_many
+    via: 'path parameter {stream}'
+  - from: Sampler
+    to: SamplerParameter
+    type: has_many
+    via: Gateway setup parameters list
+  - from: Dataview
+    to: Group
+    type: belongs_to
+    via: groupHeading
+  - from: Dataview
+    to: Row
+    type: has_many
+    via: 'path parameter {row}'
+  - from: Dataview
+    to: Column
+    type: has_many
+    via: addTableColumn
+  - from: Dataview
+    to: Headline
+    type: has_many
+    via: addHeadline
+  - from: Row
+    to: Cell
+    type: has_many
+    via: 'cellName = row.column'
+  - from: Stream
+    to: Message
+    type: has_many
+    via: addMessage / PUT stream
+  - from: Gateway
+    to: Command
+    type: has_many
+    via: commands configuration
+constraints:
+  - >-
+    The managed entity and sampler must already exist in the Gateway setup before
+    any REST or XML-RPC publish will succeed. Neither API creates them — the one
+    exception is XML-RPC `_gateway.addManagedEntity`, which adds a managed entity
+    from a data section.
+  - >-
+    Dataview rows default to a 200-row ceiling (MAX_GM_ROWS / sampler "Row limit"
+    / Gateway-wide "Custom dataview max rows"). Excess rows are truncated and a
+    warning is written into the samplingStatus headline; over XML-RPC the same
+    ceiling surfaces as LIMIT_REACHED.
+  - >-
+    A view name must differ from its group heading. ITRS describes the constraint
+    as historical.
+built_in_headlines:
+  custom_dataview:
+    - name: samplingStatus
+      description: >-
+        Status of the sampler. Shows "Sampling dependent on 3rd Party Application"
+        for REST-fed dataviews, and "FAILED: No heartbeat from the client in the
+        last xx seconds" when an XML-RPC client that signed on stops updating.
+    - name: totalRows
+      description: Total rows currently in the dataview.
+  streams_dataview:
+    headlines:
+      - name: samplingStatus
+      - name: totalStreams
+    columns:
+      - name
+      - currentBufferSize
+      - maxBufferSize
+      - totalMessagesReceived
+      - totalMessagesLost

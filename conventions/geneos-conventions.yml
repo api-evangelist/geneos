@@ -1,0 +1,205 @@
+generated: '2026-09-12'
+method: searched
+source: >-
+  https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html,
+  https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html,
+  https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html,
+  derived from openapi/geneos-netprobe-rest-api-openapi.yml
+specification: API Commons Conventions
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+cross_links:
+  errors: errors/geneos-problem-types.yml
+  lifecycle: lifecycle/geneos-lifecycle.yml
+  authentication: authentication/geneos-authentication.yml
+  rate_limits: rate-limits/geneos-rate-limits.yml
+  data_model: data-model/geneos-data-model.yml
+auth_style:
+  summary: >-
+    Three surfaces, three models. Gateway REST: HTTP Basic or an SSO bearer token,
+    with the service disabled by default. Netprobe REST: optional mutual TLS, no
+    scheme declared in the contract. XML-RPC: no authentication at all, access
+    gated by a host allow-list. See authentication/geneos-authentication.yml.
+addressing:
+  style: hierarchical path addressing that mirrors the Geneos object tree
+  netprobe_rest: >-
+    /v1/managedEntity/{me}/sampler/{sampler}/dataview/{dataview}/row/{row} — the
+    managed entity and sampler must already exist in the Gateway setup. Where two
+    samplers share a name under different types, the type is appended in
+    parentheses: /sampler/mySampler(myType). The type may be omitted when the
+    sampler name is unambiguous.
+  xml_rpc: >-
+    Method names are the path: <ManagedEntity>.<Sampler>.<function>, with an
+    optional (Type) suffix on the sampler, and <group><view> concatenated for
+    view-scoped calls. Two reserved pseudo-entities, _netprobe and _gateway,
+    carry the probe- and gateway-level functions; managed entities must not be
+    given those names.
+  gateway_rest: >-
+    Targets are Geneos XPaths in the JSON body rather than in the URL, e.g.
+    "/geneos/gateway[(@name=\"GW\")]/directory/probe[(@name=\"P\")]". An XPath
+    need not be fully unique but must resolve to exactly one item, or the call
+    fails with "Command target matches more than one item".
+  uniqueness_rule: >-
+    "Following RESTful API best practice, resource names must be unique. Avoid
+    giving your samplers and dataviews the same name." Stated in the OpenAPI
+    description itself.
+content_negotiation:
+  supported: true
+  gateway_rest:
+    accept:
+      - application/json
+      - text/event-stream
+    default: >-
+      "Currently if there is no match available for any of the requested document
+      types, the REST Service will send a JSON Response document."
+  netprobe_rest:
+    request: application/json for dataviews; any message type for streams
+pagination:
+  style: none
+  note: >-
+    No surface paginates. The Netprobe REST API is write-only apart from
+    /healthcheck; the Gateway REST list endpoints (/rest/commands/all,
+    /rest/xpaths/match) return the whole result set in one document.
+filtering:
+  gateway_rest:
+    - parameter: namePattern
+      applies_to: /rest/commands/available
+      description: Regular expression filter over command names, e.g. "^/SNOOZE:[mi]".
+    - parameter: target
+      applies_to: most endpoints
+      description: Geneos XPath selecting the item(s) the request applies to.
+idempotency:
+  coverage: partial
+  mechanism: HTTP verb semantics only — there is no Idempotency-Key header anywhere in Geneos
+  retention: n/a
+  scope:
+    - 'PUT /v1/managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview} (create or update a dataview)'
+    - 'PUT /v1/managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}/row/{row} (create or update a row)'
+    - 'PUT /v1/managedEntity/{me}/sampler/{sampler}(type)/stream/{stream} (create or update a stream — the stream resource is idempotent, the messages written through it are NOT)'
+    - 'DELETE /v1/managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}'
+    - 'DELETE /v1/managedEntity/{me}/sampler/{sampler}(type)/dataview/{dataview}/row/{row}'
+    - 'entity.sampler.view.updateHeadline / updateTableCell / updateTableRow / updateEntireTable (XML-RPC last-write-wins upserts)'
+  not_covered:
+    - 'POST /rest/runCommand and POST /rest/runCommandOnMultipleTargets on the Gateway REST service. These execute Geneos commands — snoozing, reloading setup, restarting or rolling back a Netprobe — and replaying one repeats the side effect. There is no request key, no dedupe window and no dry-run.'
+    - 'entity.sampler.createView / addTableRow / addTableColumn / addHeadline (XML-RPC), which fail with VIEW_EXISTS / ROW_EXISTS / COLUMN_EXISTS / HEADLINE_EXISTS on replay rather than succeeding idempotently.'
+    - 'entity.sampler.stream.addMessage (XML-RPC) and stream writes generally — every call appends another message.'
+  note: >-
+    Recorded as `partial`, not `full`, deliberately. The Netprobe REST API's whole
+    mutating surface is PUT/DELETE and is genuinely replay-safe, which is why this
+    is not `none`. But that safety comes from HTTP verb semantics, not from a
+    provider-supplied replay-protection mechanism, and it does not extend to the
+    Gateway command service — the surface where a replayed request has real
+    operational consequence.
+reversibility:
+  grade: documented
+  note: >-
+    Reversal paths exist for the resource-shaped writes and are absent for the
+    command-shaped ones. NO window is stated anywhere in the documentation for any
+    of them, so this grades `documented` rather than `verified`. No window is
+    asserted here that ITRS does not state.
+  surfaces:
+    - write: 'PUT .../dataview/{dataview} (create or update a dataview)'
+      reversal: 'DELETE .../dataview/{dataview}'
+      window: not stated
+      note: >-
+        Deletes the dataview outright. Re-PUTting restores the structure but not
+        the history — Geneos dataviews are live state, and any downstream rules or
+        alerts that fired in between have already fired.
+    - write: 'PUT .../dataview/{dataview}/row/{row}'
+      reversal: 'DELETE .../dataview/{dataview}/row/{row}'
+      window: not stated
+    - write: 'PUT .../stream/{stream}'
+      reversal: none
+      window: n/a
+      note: >-
+        A message written to a stream is consumed by a downstream sampler and is
+        then gone; with no consumer attached "the stream registry purges the
+        messages immediately". There is no recall or delete operation for stream
+        content.
+    - write: 'XML-RPC entity.sampler.createView'
+      reversal: 'entity.sampler.removeView'
+      window: not stated
+      note: 'Cannot be used while a Gateway 1 is connected — returns GATEWAY_NOT_SUPPORTED.'
+    - write: 'XML-RPC entity.sampler.view.addTableRow / addHeadline'
+      reversal: 'entity.sampler.view.removeTableRow / removeHeadline'
+      window: not stated
+    - write: 'XML-RPC entity.sampler.signOn (commit to a heartbeat interval)'
+      reversal: 'entity.sampler.signOff'
+      window: not stated
+      note: 'signOff or heartbeat when not signed on returns OK with no effect — safe to call blind.'
+    - write: 'POST /rest/runCommand with /SNOOZE:manual'
+      reversal: 'POST /rest/runCommand with /SNOOZE:unsnooze'
+      window: not stated
+      note: >-
+        A snooze can carry its own duration argument, but that is the snooze's
+        lifetime, not a window for undoing it.
+    - write: 'POST /rest/runCommand generally'
+      reversal: none
+      window: n/a
+      note: >-
+        Commands are arbitrary — the documented set includes /GATEWAY:reloadSetup
+        and /RMS:rollback (roll back to an older Netprobe version). There is no
+        generic undo. An agent must know the specific inverse command, if one
+        exists, before it acts.
+dry_run_mode:
+  available: partial
+  note: >-
+    No dry-run flag exists on any write. Three read-only rehearsal endpoints do
+    exist on the Gateway REST service and are the closest thing available:
+    /rest/commands/available (which commands can run on this target, filtered by
+    the caller's permissions), /rest/xpaths/commandTargets (which items this
+    command can be run against, likewise filtered) and /rest/setup/validate
+    (validation report for the running setup). Using them before /rest/runCommand
+    is the documented way to avoid a failed or mis-targeted command.
+tracing:
+  request_id_header: none
+  note: No correlation or request-id header is documented on any surface.
+metadata:
+  supported: false
+  note: >-
+    No free-form metadata field on any resource. The nearest equivalent is the
+    sampler `parameters` name/value list configured in the Gateway setup and read
+    back over XML-RPC with entity.sampler.getParameter.
+field_expansion:
+  supported: false
+error_envelope:
+  see: errors/geneos-problem-types.yml
+  summary: >-
+    Gateway REST returns {"error": "<message>"} with an HTTP status; XML-RPC
+    returns a named error code plus description as an RPC fault; the Netprobe
+    REST API declares 400/404/500 with no schema at all. No RFC 9457.
+rate_limit_signaling:
+  headers: none
+  note: >-
+    No X-RateLimit-* or RateLimit-* headers, no 429, no Retry-After. Back-pressure
+    is expressed structurally instead: LIMIT_REACHED and STREAM_BUFFER_FULL on
+    XML-RPC, a totalMessagesLost counter on the Streams Dataview, and row
+    truncation with a warning written into the samplingStatus headline. See
+    rate-limits/geneos-rate-limits.yml.
+streaming:
+  supported: true
+  mechanisms:
+    - name: Server-Sent Events command output
+      surface: geneos:gateway-rest
+      description: >-
+        Request `Accept: text/event-stream` on /rest/runCommand to receive the
+        command's stdout, stderr and execLog as single-line `data:` events
+        terminated by a status message. No event ids or event types are sent, so
+        SSE reconnection semantics do not apply; ITRS states plainly that the
+        Gateway does not support reconnecting to a command output stream and that
+        a client which reconnects will rerun the command.
+    - name: API streams
+      surface: 'geneos:netprobe-rest-api, geneos:xml-rpc'
+      description: >-
+        Named streams written by an external application and read by a consuming
+        sampler (FKM, Trapmon, TIB-RV Stream, Windows Event Queue). Buffer default
+        1000 messages; overflow drops the earliest and increments totalMessagesLost.
+  asyncapi_published: false
+  webhooks_published: false
+  note: >-
+    No AsyncAPI document and no webhook catalogue. Outbound alerting is done with
+    Gateway Actions and Effects (scripts, email via libemail, the first-party
+    ServiceNow and PagerDuty integrations in cordial), which is a scripting
+    surface rather than a subscribable webhook API. No `AsyncAPI` or `Webhooks`
+    pointer is wired.

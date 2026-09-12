@@ -1,0 +1,114 @@
+generated: '2026-09-12'
+method: searched
+source: >-
+  https://github.com/ITRS-Group (org listing), https://proxy.golang.org,
+  https://crates.io/api/v1/crates, https://api.github.com/repos/ITRS-Group/*
+specification: API Commons Packages
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+note: >-
+  Geneos is customer-deployed software, so there is no hosted-API client SDK in
+  the usual sense. What ITRS Group does publish, first-party and under its own
+  GitHub organisation, is tooling and language bindings for the Geneos
+  programmable surfaces: Go packages that speak the XML-RPC Instrumentation API
+  and the Gateway REST command service, and a Rust library for building Toolkit
+  samplers. Registry metadata below was read from the registries' own
+  unauthenticated metadata endpoints on 2026-09-12. Searched and found NOTHING
+  on npm (registry.npmjs.org search for "geneos" returned no first-party
+  package), PyPI (geneos, py-geneos, geneos-toolkit, itrs-geneos all 404),
+  Maven Central, NuGet, Packagist and RubyGems.
+registries_checked:
+  - registry: go
+    endpoint: https://proxy.golang.org
+    result: hit
+  - registry: crates.io
+    endpoint: https://crates.io/api/v1/crates
+    result: hit
+  - registry: npm
+    endpoint: https://registry.npmjs.org
+    result: no first-party package found
+  - registry: pypi
+    endpoint: https://pypi.org/pypi
+    result: 404 on every candidate name
+  - registry: github-releases
+    endpoint: https://api.github.com/repos/ITRS-Group
+    result: hit
+packages:
+  - name: github.com/itrs-group/cordial
+    language: Go
+    registry: go
+    official: true
+    url: https://pkg.go.dev/github.com/itrs-group/cordial
+    repository: https://github.com/ITRS-Group/cordial
+    version: v1.29.2
+    published: '2026-09-09'
+    version_source: https://proxy.golang.org/github.com/itrs-group/cordial/@latest
+    license: Apache-2.0 with additional ITRS terms (repo LICENSE, SPDX NOASSERTION)
+    covers:
+      - Geneos XML-RPC Instrumentation API (pkg/geneos/xmlrpc, pkg/geneos/samplers,
+        pkg/geneos/streams, pkg/geneos/plugins)
+      - Geneos Gateway REST command service and dataview snapshots (pkg/geneos/commands)
+      - Geneos XPath parsing and manipulation (pkg/geneos/xpath)
+      - Gateway setup-file XML generation (pkg/geneos)
+      - Unified XML-RPC + REST publishing API (pkg/geneos/api — the repo marks this
+        one "work in progress and not ready for real-world use")
+    note: >-
+      The monorepo that also ships the `geneos` CLI, the `gdna` analyser,
+      `dv2email`, `gateway-reporter`, `libemail` and first-party ServiceNow and
+      PagerDuty alert integrations. Actively released — v1.29.x shipped three
+      releases in the first nine days of September 2026.
+  - name: geneos-toolkit
+    language: Rust
+    registry: crates.io
+    official: true
+    url: https://crates.io/crates/geneos-toolkit
+    repository: https://github.com/ITRS-Group/geneos-toolkit-rs
+    version: 0.4.2
+    published: '2026-06-10'
+    version_source: https://crates.io/api/v1/crates/geneos-toolkit
+    license: Apache-2.0
+    covers:
+      - Building Geneos Toolkit-compatible samplers (the CSV-on-stdout scripting
+        integration point) in Rust
+    note: >-
+      Crate name is `geneos-toolkit`; the repository is `geneos-toolkit-rs`.
+      Authored by an itrsgroup.com address and published under the ITRS Group
+      organisation.
+  - name: geneos-xtender
+    language: Rust
+    registry: github-releases
+    official: true
+    url: https://github.com/ITRS-Group/geneos-xtender/releases
+    repository: https://github.com/ITRS-Group/geneos-xtender
+    version: 0.10.0
+    published: '2025-04-29'
+    version_source: https://api.github.com/repos/ITRS-Group/geneos-xtender/releases
+    license: Apache-2.0
+    covers:
+      - Running Nagios-compatible check plugins as Geneos Toolkit samplers
+    note: >-
+      Distributed as GitHub release artifacts only — `geneos-xtender` is NOT on
+      crates.io (the API returns "crate does not exist"), so there is no registry
+      metadata endpoint for it. Version and date read from the repository's own
+      release list. Last release April 2025, roughly 16 months before this probe.
+  - name: geneos (CLI binary)
+    language: Go
+    registry: github-releases
+    official: true
+    url: https://github.com/ITRS-Group/cordial/releases/latest/download/geneos
+    repository: https://github.com/ITRS-Group/cordial
+    version: v1.29.2
+    published: '2026-09-09'
+    version_source: https://api.github.com/repos/ITRS-Group/cordial/releases
+    note: >-
+      The install URL ITRS documents is the unpinned `releases/latest/download/geneos`
+      redirect, so a consumer following the documented instructions cannot tell which
+      version they are getting until they run `geneos version`. Full command surface
+      is captured in cli/geneos-cli.yml.
+not_first_party:
+  - name: ITRS Infrastructure Agent / plugnpy / pyopsview / plugnpshell
+    reason: >-
+      Published by the same ITRS Group GitHub organisation but they target
+      Opsview Monitor and the Infrastructure Agent, not Geneos. Excluded from
+      this Geneos profile rather than counted as Geneos SDKs.

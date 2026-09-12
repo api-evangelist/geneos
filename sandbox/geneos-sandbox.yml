@@ -1,0 +1,77 @@
+generated: '2026-09-12'
+method: searched
+source: >-
+  https://github.com/ITRS-Group/cordial/blob/main/tools/geneos/README.md,
+  https://www.itrsgroup.com/products/free-trials
+specification: API Commons Sandbox
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+sandbox:
+  hosted: false
+  self_hosted: true
+  interactive_console: false
+  note: >-
+    There is no hosted sandbox, no API playground and no test-mode key — Geneos
+    is customer-deployed, so "sandbox" here means standing up a throwaway local
+    Geneos environment. Two real, published routes exist and both are recorded
+    below. NO test credentials, tokens or fixture values are published by ITRS,
+    and none are invented here.
+routes:
+  - name: geneos init demo
+    type: local demo environment
+    command: 'geneos init demo -u your-email@example.com'
+    tool: the first-party `geneos` CLI (cordial)
+    source: https://github.com/ITRS-Group/cordial/blob/main/tools/geneos/README.md
+    requires:
+      - >-
+        A registered ITRS account. The email passed with -u is the account used to
+        download ITRS software; registration is at
+        https://www.itrsgroup.com/?register=1
+    produces: >-
+      A working local Geneos installation — licence daemon, gateway and netprobe —
+      so the Netprobe REST API (port 7136) and the XML-RPC Instrumentation API can
+      be exercised against something real before touching a production estate.
+    note: >-
+      Actively maintained: cordial v1.29.2 (2026-09-09) is titled "Fix `geneos
+      init demo`".
+  - name: Free trials
+    type: commercial trial
+    url: https://www.itrsgroup.com/products/free-trials
+    http_status: 200
+    probed: '2026-09-12'
+    note: >-
+      Sales-mediated trial request rather than a self-serve signup. No instant
+      provisioning, no credentials issued at the page.
+  - name: Book a demo
+    type: guided demo
+    url: https://www.itrsgroup.com/request-a-demo
+    http_status: 200
+    probed: '2026-09-12'
+test_data:
+  test_keys: none published
+  test_identifiers: none published
+  fixtures: none published
+  time_simulation: none published
+  note: >-
+    Nothing to record. Geneos has no test/live key duality and no magic
+    identifiers — the equivalent concept is running against a demo Gateway rather
+    than a production one.
+safety_rails:
+  - name: geneos protect
+    description: >-
+      Marks instances as protected so destructive CLI commands refuse to touch
+      them. The one published guard-rail; worth applying to any instance that is
+      not the demo.
+  - name: Gateway REST service disabled by default
+    description: >-
+      `commands > restService > enabled` defaults to false, so a fresh Gateway
+      exposes no command surface until someone deliberately enables it.
+  - name: TRUSTED_API_HOSTS
+    description: >-
+      Host allow-list for the XML-RPC API; calls from other hosts fail with
+      HOST_NOT_TRUSTED.
+  - name: /rest/setup/validate
+    description: >-
+      Read-only validation report for a running Gateway setup — the nearest thing
+      to a dry run before applying configuration changes.

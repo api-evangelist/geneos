@@ -1,0 +1,153 @@
+generated: '2026-09-12'
+method: searched
+source: >-
+  https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
+  (XML-RPC technical reference) and
+  https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#http-status-codes
+  (Gateway REST), enriched from openapi/geneos-netprobe-rest-api-openapi.yml
+specification: API Commons ErrorCatalog
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+format: vendor
+rfc9457: false
+note: >-
+  Geneos does not use RFC 9457 problem+json anywhere. Two distinct error models
+  coexist: the Gateway REST service returns plain HTTP status codes with a
+  `{"error": "..."}` JSON body, and the XML-RPC Instrumentation API returns a
+  named error code plus a description as the RPC fault. The Netprobe REST API's
+  OpenAPI declares 400/404/500 on its write operations but attaches no schema to
+  any of them, so the error envelope for that surface is undocumented.
+envelopes:
+  - api: geneos:gateway-rest
+    media_type: application/json
+    shape: '{"error": "<message>"}'
+    success_shape: '{"status": "finished"}'
+    stream_shape: >-
+      When the client sends `Accept: text/event-stream` the Gateway replies with
+      Server-Sent Events: a `mimetype` message, then `stdout`/`stderr`/`execLog`
+      events, then a final `{"status": "finished"}` or `{"status": "error"}`. The
+      Gateway does not close the connection — the client must. A dropped
+      connection cancels the command, and reconnecting reruns it.
+    example: '{"error": "Command target matches more than one item"}'
+  - api: geneos:xml-rpc
+    media_type: text/xml
+    shape: XML-RPC fault carrying a named error code and a description
+    success_shape: 'the string "OK", or a typed value for the boolean/int methods'
+  - api: geneos:netprobe-rest-api
+    media_type: undocumented
+    shape: >-
+      The spec declares 400, 404 and 500 responses on the write operations with
+      no schema and no example. DELETE operations declare only a 200.
+http_status_codes:
+  - api: geneos:gateway-rest
+    codes:
+      - status: 200
+        title: OK
+        meaning: The REST service ran the command successfully.
+      - status: 400
+        title: Bad Request
+        meaning: The POST data is not well-formed JSON, or a mandatory item is missing.
+        remediation: Validate the JSON body and confirm `command` and `target` are both present.
+      - status: 403
+        title: Forbidden
+        meaning: >-
+          Invalid credentials when credentials are required, OR valid credentials
+          without permission to run the requested command on the requested target.
+        remediation: >-
+          The two causes are indistinguishable from the response. Check the
+          credential first, then check the user's command and target permissions
+          in the Gateway setup.
+      - status: 404
+        title: Not Found
+        meaning: >-
+          The service is not available — either the Gateway is not running a REST
+          service at all, or the REST service is secure and the request was made
+          on the Gateway's insecure port.
+        remediation: >-
+          Confirm `commands > restService > enabled` is true, then check
+          `commands > restService > allowOnInsecureComms` and retry over HTTPS.
+      - status: 500
+        title: Internal Server Error
+        meaning: The command that was run returned an error.
+  - api: geneos:netprobe-rest-api
+    codes:
+      - status: 200
+        meaning: Declared on every operation in the published OpenAPI.
+      - status: 400
+        meaning: Declared on the three PUT operations. No schema or description in the contract.
+      - status: 404
+        meaning: >-
+          Declared on the dataview and row PUT operations. In practice this is the
+          managed entity or sampler not existing — the REST API requires both to
+          already exist in the Gateway setup before data can be published to them.
+      - status: 500
+        meaning: Declared on the dataview and row PUT operations and on /healthcheck.
+error_codes:
+  - api: geneos:xml-rpc
+    codes:
+      - code: GATEWAY_NOT_CONNECTED
+        meaning: The Netprobe is not currently connected to a Gateway.
+        action: >-
+          Retry once the Netprobe reconnects. `_netprobe.gatewayConnected()` tests
+          this without side effects.
+      - code: NO_SUCH_SAMPLER
+        meaning: No API sampler of that name exists on that managed entity.
+        action: >-
+          Check the managed entity and sampler names, or call
+          `_netprobe.samplerExists()` first.
+      - code: NO_SUCH_VIEW
+        meaning: The named view does not exist in the sampler.
+        action: Create it with `entity.sampler.createView` first.
+      - code: NO_SUCH_ROW
+        meaning: The named row does not exist in the view.
+      - code: NO_SUCH_CELL
+        meaning: The addressed cell does not exist.
+      - code: NO_SUCH_HEADLINE
+        meaning: The named headline variable does not exist in the view.
+      - code: NO_SUCH_STREAM
+        meaning: The named stream does not exist on the API-STREAMS sampler.
+      - code: VIEW_EXISTS
+        meaning: A view of that name already exists. View names must be unique within and across groups.
+      - code: ROW_EXISTS
+        meaning: A row of that name already exists in the view.
+      - code: COLUMN_EXISTS
+        meaning: A column of that name already exists in the view.
+      - code: HEADLINE_EXISTS
+        meaning: A headline of that name already exists in the view.
+      - code: COLUMN_MISMATCH
+        meaning: The supplied row or table does not match the view's declared columns.
+      - code: LIMIT_REACHED
+        meaning: >-
+          A configured maximum was reached — MAX_GM (views per sampler),
+          MAX_GM_ROWS (rows per view, default 200) or MAX_GM_COLS (columns per view).
+        action: Raise the relevant sampler parameter, or the Gateway-wide custom dataview max rows.
+      - code: STREAM_BUFFER_FULL
+        meaning: >-
+          The stream's in-memory buffer (default 1000 messages) is full because no
+          sampler is consuming it fast enough.
+        action: Increase `bufferSize`, or attach a consumer.
+      - code: NUMBER_OUT_OF_RANGE
+        meaning: A numeric argument fell outside its allowed range — for example a signOn heartbeat period outside 1–86400 seconds.
+      - code: SAMPLER_PARAM_NOT_FOUND
+        meaning: The parameter named in `entity.sampler.getParameter` is not defined in the Gateway configuration.
+      - code: VIEW_AND_GROUP_EQUAL
+        meaning: >-
+          The groupHeading and viewName supplied to `createView` are identical.
+          ITRS notes this constraint is historical.
+      - code: GATEWAY_NOT_SUPPORTED
+        meaning: The operation is not available with the connected Gateway version (for example `removeView` against a Gateway 1).
+      - code: HOST_NOT_TRUSTED
+        meaning: >-
+          The calling host is not in TRUSTED_API_HOSTS. The call returns
+          immediately and the first occurrence per host is logged to the Netprobe
+          log file.
+        action: Add the host or IP to the TRUSTED_API_HOSTS allow-list.
+gaps:
+  - >-
+    The Netprobe REST API's 400/404/500 responses carry no schema, no description
+    and no example, so the only machine-readable part of that surface's error
+    model is the status code itself.
+  - >-
+    Gateway REST 403 conflates authentication failure with authorisation failure,
+    which an agent cannot resolve without out-of-band knowledge.

@@ -1,0 +1,119 @@
+generated: '2026-09-12'
+method: searched
+source: >-
+  https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#user-authentication
+docs:
+  - >-
+    https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#user-authentication
+  - https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html#plugin-configuration
+  - https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
+specification: API Commons Authentication
+specificationVersion: '0.1'
+provider: Geneos
+providerId: geneos
+note: >-
+  derive-authentication.py produced nothing for this provider because the one
+  published OpenAPI declares no securitySchemes at all. Everything below was
+  read from ITRS Group's own documentation. Geneos is customer-deployed, so
+  every authentication decision here is a deployment choice the customer makes,
+  not a property of a hosted service — and in two of the three surfaces the
+  default is no authentication.
+summary:
+  oauth2: false
+  openid_connect: false
+  api_keys: false
+  http_basic: true
+  bearer_token: true
+  mutual_tls: true
+  sso: true
+  unauthenticated_default: true
+surfaces:
+  - api: geneos:gateway-rest
+    name: Geneos Gateway REST Command Service
+    enabled_by_default: false
+    schemes:
+      - id: gatewayBasic
+        type: http
+        scheme: basic
+        description: >-
+          "For password-based authentication, each REST command must be
+          accompanied by a username and password, using HTTP basic access
+          authentication." Credentials are users configured with passwords in the
+          Gateway setup. ITRS warns in the same section that the header is
+          base64-encoded but neither encrypted nor hashed, and recommends
+          restricting the REST service to secure connections when authentication
+          is enabled.
+        evidence: >-
+          https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#user-authentication
+      - id: gatewaySsoBearer
+        type: http
+        scheme: bearer
+        description: >-
+          An SSO access token supplied as `Authorization: Bearer <token>`.
+          Obtained from `GET /rest/authorize`, which redirects the HTTP client to
+          the configured SSO Agent; if the SSO provider is ITRS Analytics a
+          different token flow applies. Tokens expire and a new one must then be
+          obtained. The Gateway refuses SSO-token connections unless the SSO
+          Agent setting is present.
+        token_endpoint: '{gatewayHost}:{restPort}/rest/authorize'
+        evidence: >-
+          https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#user-authentication
+    not_supported:
+      - >-
+        System logins. "System logins are not supported, since system credentials
+        are checked by the user interface client (e.g. Active Console), which is
+        not involved in the REST API."
+    authorization:
+      model: per-command, per-target permissions
+      description: >-
+        403 is returned both for invalid credentials and for valid credentials
+        without permission to run the requested command on the requested target.
+        /rest/commands/available and /rest/xpaths/commandTargets filter their
+        results by the caller's permissions; /rest/commands/all and
+        /rest/xpaths/match deliberately do not.
+    transport:
+      https_supported: true
+      https_enforceable: true
+      setting: commands > restService > allowOnInsecureComms
+      description: >-
+        The REST service can be configured to run only on secure connections. A
+        request made on the insecure port while the service is secure returns 404.
+  - api: geneos:netprobe-rest-api
+    name: Geneos Netprobe REST API
+    enabled_by_default: true
+    schemes:
+      - id: netprobeMutualTLS
+        type: mutualTLS
+        optional: true
+        description: >-
+          The plug-in can require clients to present a valid certificate by
+          enabling "Verify client certificate" and supplying a "Client CA
+          certificate" path; if the path is empty the plug-in falls back to the
+          Netprobe's -ssl-certificate-chain file and logs a warning. HTTPS
+          requires starting the Netprobe with -secure, -ssl-certificate and
+          -ssl-certificate-key.
+        evidence: https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html#plugin-configuration
+    gap: >-
+      The published OpenAPI declares no securitySchemes and no security
+      requirement, so a client generated from the contract will send
+      unauthenticated requests. With mutual TLS not configured, anything that can
+      reach port 7136 can create, update and delete dataviews and rows.
+  - api: geneos:xml-rpc
+    name: Geneos XML-RPC Instrumentation API
+    enabled_by_default: true
+    schemes: []
+    description: >-
+      "XML-RPC traffic is neither encrypted or authenticated." ITRS documents
+      IPSec as the suggested mitigation. Access control is a host allow-list:
+      TRUSTED_API_HOSTS, set as an environment variable or in the managed entity
+      descriptor, is a comma-separated list of trusted hosts/IPs; calls from any
+      other host return HOST_NOT_TRUSTED immediately and the first such call from
+      each host is written to the Netprobe log. If the Netprobe runs in secure
+      mode the XML-RPC client must use HTTPS as the transport.
+    evidence: https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
+scopes:
+  published: false
+  note: >-
+    No OAuth 2.0 flow and therefore no scope surface. scopes/ is deliberately not
+    written for this provider — permissions are Gateway user permissions on
+    commands and targets, not OAuth scopes.

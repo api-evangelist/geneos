@@ -1,42 +1,47 @@
 aid: geneos
 name: Geneos
 description: >-
-  Geneos is ITRS Group's real-time monitoring platform that provides
-  comprehensive observability for trading systems, applications, and
-  infrastructure. Widely deployed across investment banks, hedge funds, and
-  exchanges, Geneos collects high-frequency telemetry from custom samplers and
-  toolkits, aggregates it through Gateways, and exposes that data through
-  REST, XML-RPC, streaming, and SDK interfaces for programmatic access,
-  automation, and dashboarding.
+  Geneos is ITRS Group's real-time monitoring and observability platform for
+  trading systems, applications and infrastructure, deployed across investment
+  banks, hedge funds, exchanges, telcos and government. It is customer-deployed
+  software rather than a hosted API: Netprobes collect high-frequency telemetry
+  at the edge, Gateways aggregate and rule over it, and each tier exposes its own
+  programmable surface. The Netprobe ships a published OpenAPI 3.0 REST plug-in
+  for pushing dataviews and streams into monitoring, an XML-RPC Instrumentation
+  API for in-house applications to publish custom dataviews, and the Gateway
+  exposes a JSON/Server-Sent-Events REST command service for running commands,
+  snoozing entities, snapshotting dataviews and validating setup. ITRS also
+  publishes first-party Go tooling (cordial, including the geneos CLI) and a
+  Rust toolkit library on GitHub.
 type: Index
 deliveryModel:
-  model: saas
+  model: self-hosted
   open_source: false
   commercial: true
   callable_host: false
-  label: Hosted service · you call their endpoint
-  confidence: medium
+  label: Customer-deployed software · you run the endpoint
+  confidence: high
   source:
-  - pricing
-  generated: '2026-08-28'
+    - docs
+  generated: '2026-09-12'
   method: derived
 accessModel:
-  pricing: freemium
-  onboarding: unknown
-  trial: false
+  pricing: contact-sales
+  onboarding: sales-assisted
+  trial: true
   try_now: false
   public: false
-  label: Freemium
-  confidence: medium
+  label: Licensed, trial on request
+  confidence: high
   source:
-  - plans
-  generated: '2026-07-22'
+    - plans
+  generated: '2026-09-12'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/geneos.png
 access: 3rd-Party
 created: '2024-01-15'
-modified: '2026-04-28'
-position: Consuming
+modified: '2026-09-12'
+position: Producing
 url: >-
   https://raw.githubusercontent.com/api-evangelist/geneos/refs/heads/main/apis.yml
 specificationVersion: '0.23'
@@ -49,105 +54,206 @@ tags:
   - Observability
   - Real-Time
   - Trading Systems
+  - XML-RPC
+  - OpenAPI
 apis:
-  - aid: geneos:gateway-rest
-    name: Geneos Gateway REST API
+  - aid: geneos:netprobe-rest-api
+    name: Geneos Netprobe REST API
     description: >-
-      RESTful API exposed by the Geneos Gateway for retrieving monitoring data
-      and managing dataviews, samplers, entities, and snooze states
-      programmatically. Authenticated and typically deployed inside
-      enterprise networks.
+      OpenAPI 3.0 REST plug-in on the Geneos Netprobe. Third-party applications
+      PUT JSON to create or update dataviews, rows and streams on a named
+      managed entity and sampler, DELETE them, and GET a health check. Published
+      by ITRS as a machine-readable contract and rendered with ReDoc in the
+      Geneos documentation. The plug-in listens on the Netprobe host (HTTP 7136,
+      HTTPS 7137 by default), so the base URL is the customer's own Netprobe.
     humanURL: >-
-      https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_rest_api.html
+      https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html
+    baseURL: 'http://{netprobeHost}:7136/v1'
     tags:
       - Monitoring
       - REST
+      - OpenAPI
+    properties:
+      - type: OpenAPI
+        url: openapi/geneos-netprobe-rest-api-openapi.yml
+      - type: Overlay
+        url: overlays/geneos-netprobe-rest-api-overlay.yaml
+      - type: Documentation
+        url: >-
+          https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html
+      - type: APIReference
+        url: >-
+          https://docs.itrsgroup.com/docs/geneos/5.14.0/api/rest-api/?v=/v1/rest-api.yaml
+  - aid: geneos:gateway-rest
+    name: Geneos Gateway REST Command Service
+    description: >-
+      JSON over HTTP(S) service exposed by the Geneos Gateway so third-party
+      applications can run commands, list available commands and command
+      targets, resolve XPath targets, snapshot a dataview, read the Gateway time
+      zone, obtain an SSO token and fetch a setup validation report. Responses
+      are application/json or a Server-Sent Events command output stream. It is
+      disabled by default and enabled per Gateway in the Gateway Setup Editor.
+      No OpenAPI is published for this surface; the endpoint list, request
+      bodies, HTTP status codes and authentication are documented in prose.
+    humanURL: >-
+      https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#rest-service
+    baseURL: 'http://{gatewayHost}:{restPort}/rest'
+    tags:
+      - Automation
+      - REST
+      - Commands
     properties:
       - type: Documentation
         url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_rest_api.html
+          https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#rest-service
       - type: Authentication
-        url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/rest_api_authentication.html
+        url: authentication/geneos-authentication.yml
+      - type: ErrorCatalog
+        url: errors/geneos-problem-types.yml
   - aid: geneos:xml-rpc
-    name: Geneos XML-RPC API
+    name: Geneos XML-RPC Instrumentation API
     description: >-
-      XML-RPC interface for programmatic control of Geneos Gateway including
-      executing commands, managing configuration, publishing data into
-      Gateways from external samplers, and retrieving monitoring data.
+      XML-RPC server exposed by the Netprobe API and API-STREAMS plug-ins so
+      in-house applications, in any language with an XML-RPC client, can create
+      custom dataviews, add and update headlines, rows, columns and cells, write
+      to streams consumed by FKM and other stream plug-ins, and sign on to
+      heartbeat monitoring. The published technical reference documents 30
+      method signatures and a named error-code vocabulary.
     humanURL: >-
-      https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html
+      https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
+    baseURL: 'http://{netprobeHost}:{netprobePort}/'
     tags:
       - Automation
       - XML-RPC
+      - Instrumentation
     properties:
       - type: Documentation
         url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html
+          https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
+      - type: ErrorCatalog
+        url: errors/geneos-problem-types.yml
   - aid: geneos:web-dashboard
-    name: Geneos Web Dashboard API
+    name: Geneos Web Dashboard
     description: >-
-      API for integrating with the Geneos Web Dashboard, enabling custom
-      dashboards, data visualization, and user interface extensions on top of
-      Geneos monitoring data.
+      Browser-delivered dashboard server that renders Geneos Active Dashboards
+      and dataviews without the Active Console desktop client. Managed as a
+      Geneos component (webserver) and documented as a product surface; ITRS
+      publishes no separate machine-readable API contract for it.
     humanURL: >-
-      https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/web-dashboard.html
+      https://docs.itrsgroup.com/docs/geneos/current/visualization/web-dashboard/index.html
     tags:
       - Dashboard
-      - UI
       - Visualization
       - Web
     properties:
       - type: Documentation
         url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/web-dashboard.html
+          https://docs.itrsgroup.com/docs/geneos/current/visualization/web-dashboard/index.html
   - aid: geneos:toolkit
-    name: Geneos Toolkit API
+    name: Geneos Toolkit (Scripting) Plug-in
     description: >-
-      Java and Python APIs delivered through the Geneos Toolkit for building
-      custom integrations, samplers, plugins, and automation scripts that
-      publish data into and pull data out of Geneos.
+      Scripting integration point where any executable that emits CSV on stdout
+      becomes a Geneos sampler. The Toolkit is how most custom and third-party
+      monitoring is bolted onto Geneos, and it is the target of the first-party
+      Go and Rust libraries ITRS publishes on GitHub.
     humanURL: >-
-      https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html
+      https://docs.itrsgroup.com/docs/geneos/current/collection/toolkit-plugin/index.html
     tags:
-      - Java
-      - Python
+      - Toolkit
+      - Scripting
       - SDK
     properties:
       - type: Documentation
         url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html
-      - type: SDKs
-        url: https://github.com/ITRS-Group/geneos-toolkit
-      - type: GitHubOrganization
-        url: https://github.com/ITRS-Group
+          https://docs.itrsgroup.com/docs/geneos/current/collection/toolkit-plugin/index.html
+      - type: SourceCode
+        url: https://github.com/ITRS-Group/geneos-toolkit-rs
 common:
-  - type: DomainSecurity
-    url: security/geneos-domain-security.yml
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/geneos-therapeutics
   - type: Website
     url: https://www.itrsgroup.com/
   - type: ProductPage
-    url: https://www.itrsgroup.com/products/geneos
+    url: https://www.itrsgroup.com/platform/geneos
   - type: Documentation
     url: https://docs.itrsgroup.com/docs/geneos/
+  - type: DeveloperPortal
+    url: https://docs.itrsgroup.com/docs/geneos/current/index.html
+  - type: APIReference
+    url: >-
+      https://docs.itrsgroup.com/docs/geneos/5.14.0/api/rest-api/?v=/v1/rest-api.yaml
+  - type: GettingStarted
+    url: >-
+      https://docs.itrsgroup.com/docs/geneos/current/getting-started/quickstart/index.html
   - type: Support
-    url: https://www.itrsgroup.com/support
+    url: https://support.itrsgroup.com
   - type: Community
     url: https://community.itrsgroup.com/
-  - type: KnowledgeBase
-    url: https://kb.itrsgroup.com/
+  - type: Blog
+    url: https://www.itrsgroup.com/blog
   - type: Training
-    url: https://www.itrsgroup.com/training
+    url: https://www.itrsgroup.com/services/training/geneos
   - type: Contact
-    url: https://www.itrsgroup.com/contact
+    url: https://www.itrsgroup.com/about/contact
+  - type: SignUp
+    url: https://www.itrsgroup.com/products/free-trials
   - type: TermsOfService
-    url: https://www.itrsgroup.com/terms
+    url: https://www.itrsgroup.com/legal/terms-of-web-use
   - type: PrivacyPolicy
-    url: https://www.itrsgroup.com/privacy
+    url: https://www.itrsgroup.com/legal/privacy-notice
   - type: GitHubOrganization
     url: https://github.com/ITRS-Group
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/itrsgroup
+  - type: Packages
+    url: packages/geneos-packages.yml
+  - type: SDKs
+    url: packages/geneos-packages.yml
+  - type: CLI
+    url: cli/geneos-cli.yml
+  - type: Sandbox
+    url: sandbox/geneos-sandbox.yml
+  - type: Authentication
+    url: authentication/geneos-authentication.yml
+  - type: Conventions
+    url: conventions/geneos-conventions.yml
+  - type: Idempotency
+    url: conventions/geneos-conventions.yml
+  - type: ErrorCatalog
+    url: errors/geneos-problem-types.yml
+  - type: Lifecycle
+    url: lifecycle/geneos-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/geneos-lifecycle.yml
+  - type: ChangeLog
+    url: changelog/geneos-changelog.yml
+  - type: DataModel
+    url: data-model/geneos-data-model.yml
+  - type: Conformance
+    url: conformance/geneos-conformance.yml
+  - type: Compliance
+    url: conformance/geneos-conformance.yml
+  - type: TrustCenter
+    url: security/geneos-trust-center.yml
+  - type: Security
+    url: security/geneos-vulnerability-disclosure.yml
+  - type: VulnerabilityDisclosure
+    url: security/geneos-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/geneos-domain-security.yml
+  - type: LLMsTxt
+    url: llms/geneos-llms.txt
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: Plans
+    url: plans/geneos-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/geneos-rate-limits.yml
+  - type: FinOps
+    url: finops/geneos-finops.yml
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-09-12'
+  status: enriched
+  artifacts_added: 24
+  pass: local-v3
