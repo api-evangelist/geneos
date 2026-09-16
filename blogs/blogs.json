@@ -1,0 +1,14 @@
+{
+  "repo": "geneos",
+  "feeds": [
+    {
+      "source": "https://community.itrsgroup.com/",
+      "feed_url": "https://community.itrsgroup.com/",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    }
+  ],
+  "post_count": 0,
+  "fetched": "2026-09-13T13:00:00Z"
+}

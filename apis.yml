@@ -57,118 +57,95 @@ tags:
   - XML-RPC
   - OpenAPI
 apis:
-  - aid: geneos:netprobe-rest-api
-    name: Geneos Netprobe REST API
-    description: >-
-      OpenAPI 3.0 REST plug-in on the Geneos Netprobe. Third-party applications
-      PUT JSON to create or update dataviews, rows and streams on a named
-      managed entity and sampler, DELETE them, and GET a health check. Published
-      by ITRS as a machine-readable contract and rendered with ReDoc in the
-      Geneos documentation. The plug-in listens on the Netprobe host (HTTP 7136,
-      HTTPS 7137 by default), so the base URL is the customer's own Netprobe.
-    humanURL: >-
-      https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html
-    baseURL: 'http://{netprobeHost}:7136/v1'
-    tags:
-      - Monitoring
-      - REST
-      - OpenAPI
-    properties:
-      - type: OpenAPI
-        url: openapi/geneos-netprobe-rest-api-openapi.yml
-      - type: Overlay
-        url: overlays/geneos-netprobe-rest-api-overlay.yaml
-      - type: Documentation
-        url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html
-      - type: APIReference
-        url: >-
-          https://docs.itrsgroup.com/docs/geneos/5.14.0/api/rest-api/?v=/v1/rest-api.yaml
-  - aid: geneos:gateway-rest
-    name: Geneos Gateway REST Command Service
-    description: >-
-      JSON over HTTP(S) service exposed by the Geneos Gateway so third-party
-      applications can run commands, list available commands and command
-      targets, resolve XPath targets, snapshot a dataview, read the Gateway time
-      zone, obtain an SSO token and fetch a setup validation report. Responses
-      are application/json or a Server-Sent Events command output stream. It is
-      disabled by default and enabled per Gateway in the Gateway Setup Editor.
-      No OpenAPI is published for this surface; the endpoint list, request
-      bodies, HTTP status codes and authentication are documented in prose.
-    humanURL: >-
+- aid: geneos:gateway-rest
+  name: Geneos Gateway REST Command Service
+  description: >-
+    JSON over HTTP(S) service exposed by the Geneos Gateway so third-party applications can run commands,
+    list available commands and command targets, resolve XPath targets, snapshot a dataview, read the
+    Gateway time zone, obtain an SSO token and fetch a setup validation report. Responses are application/json
+    or a Server-Sent Events command output stream. It is disabled by default and enabled per Gateway in
+    the Gateway Setup Editor. No OpenAPI is published for this surface; the endpoint list, request bodies,
+    HTTP status codes and authentication are documented in prose.
+  humanURL: >-
+    https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#rest-service
+  baseURL: http://{gatewayHost}:{restPort}/rest
+  tags:
+  - Automation
+  - REST
+  - Commands
+  properties:
+  - type: Documentation
+    url: >-
       https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#rest-service
-    baseURL: 'http://{gatewayHost}:{restPort}/rest'
-    tags:
-      - Automation
-      - REST
-      - Commands
-    properties:
-      - type: Documentation
-        url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/processing/monitoring-and-alerts/geneos_commands_tr/index.html#rest-service
-      - type: Authentication
-        url: authentication/geneos-authentication.yml
-      - type: ErrorCatalog
-        url: errors/geneos-problem-types.yml
-  - aid: geneos:xml-rpc
-    name: Geneos XML-RPC Instrumentation API
-    description: >-
-      XML-RPC server exposed by the Netprobe API and API-STREAMS plug-ins so
-      in-house applications, in any language with an XML-RPC client, can create
-      custom dataviews, add and update headlines, rows, columns and cells, write
-      to streams consumed by FKM and other stream plug-ins, and sign on to
-      heartbeat monitoring. The published technical reference documents 30
-      method signatures and a named error-code vocabulary.
-    humanURL: >-
-      https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
-    baseURL: 'http://{netprobeHost}:{netprobePort}/'
-    tags:
-      - Automation
-      - XML-RPC
-      - Instrumentation
-    properties:
-      - type: Documentation
-        url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
-      - type: ErrorCatalog
-        url: errors/geneos-problem-types.yml
-  - aid: geneos:web-dashboard
-    name: Geneos Web Dashboard
-    description: >-
-      Browser-delivered dashboard server that renders Geneos Active Dashboards
-      and dataviews without the Active Console desktop client. Managed as a
-      Geneos component (webserver) and documented as a product surface; ITRS
-      publishes no separate machine-readable API contract for it.
-    humanURL: >-
-      https://docs.itrsgroup.com/docs/geneos/current/visualization/web-dashboard/index.html
-    tags:
-      - Dashboard
-      - Visualization
-      - Web
-    properties:
-      - type: Documentation
-        url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/visualization/web-dashboard/index.html
-  - aid: geneos:toolkit
-    name: Geneos Toolkit (Scripting) Plug-in
-    description: >-
-      Scripting integration point where any executable that emits CSV on stdout
-      becomes a Geneos sampler. The Toolkit is how most custom and third-party
-      monitoring is bolted onto Geneos, and it is the target of the first-party
-      Go and Rust libraries ITRS publishes on GitHub.
-    humanURL: >-
-      https://docs.itrsgroup.com/docs/geneos/current/collection/toolkit-plugin/index.html
-    tags:
-      - Toolkit
-      - Scripting
-      - SDK
-    properties:
-      - type: Documentation
-        url: >-
-          https://docs.itrsgroup.com/docs/geneos/current/collection/toolkit-plugin/index.html
-      - type: SourceCode
-        url: https://github.com/ITRS-Group/geneos-toolkit-rs
+  - type: Authentication
+    url: authentication/geneos-authentication.yml
+  - type: ErrorCatalog
+    url: errors/geneos-problem-types.yml
+- aid: geneos:xml-rpc
+  name: Geneos XML-RPC Instrumentation API
+  description: >-
+    XML-RPC server exposed by the Netprobe API and API-STREAMS plug-ins so in-house applications, in any
+    language with an XML-RPC client, can create custom dataviews, add and update headlines, rows, columns
+    and cells, write to streams consumed by FKM and other stream plug-ins, and sign on to heartbeat monitoring.
+    The published technical reference documents 30 method signatures and a named error-code vocabulary.
+  humanURL: https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
+  baseURL: http://{netprobeHost}:{netprobePort}/
+  tags:
+  - Automation
+  - XML-RPC
+  - Instrumentation
+  properties:
+  - type: Documentation
+    url: https://docs.itrsgroup.com/docs/geneos/current/collection/xml-rpc-api/index.html
+  - type: ErrorCatalog
+    url: errors/geneos-problem-types.yml
+- aid: geneos:web-dashboard
+  name: Geneos Web Dashboard
+  description: >-
+    Browser-delivered dashboard server that renders Geneos Active Dashboards and dataviews without the
+    Active Console desktop client. Managed as a Geneos component (webserver) and documented as a product
+    surface; ITRS publishes no separate machine-readable API contract for it.
+  humanURL: https://docs.itrsgroup.com/docs/geneos/current/visualization/web-dashboard/index.html
+  tags:
+  - Dashboard
+  - Visualization
+  - Web
+  properties:
+  - type: Documentation
+    url: https://docs.itrsgroup.com/docs/geneos/current/visualization/web-dashboard/index.html
+- aid: geneos:toolkit
+  name: Geneos Toolkit (Scripting) Plug-in
+  description: >-
+    Scripting integration point where any executable that emits CSV on stdout becomes a Geneos sampler.
+    The Toolkit is how most custom and third-party monitoring is bolted onto Geneos, and it is the target
+    of the first-party Go and Rust libraries ITRS publishes on GitHub.
+  humanURL: https://docs.itrsgroup.com/docs/geneos/current/collection/toolkit-plugin/index.html
+  tags:
+  - Toolkit
+  - Scripting
+  - SDK
+  properties:
+  - type: Documentation
+    url: https://docs.itrsgroup.com/docs/geneos/current/collection/toolkit-plugin/index.html
+  - type: SourceCode
+    url: https://github.com/ITRS-Group/geneos-toolkit-rs
+- aid: geneos:geneos-rest-api-api
+  name: Geneos REST API
+  description: REST API plug-in
+  humanURL: https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html
+  baseURL: http://{netprobeHost}:7136/v1
+  tags:
+  - REST API
+  properties:
+  - type: OpenAPI
+    url: openapi/geneos-rest-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.itrsgroup.com/docs/geneos/current/collection/rest-api/index.html
+  - type: APIReference
+    url: https://docs.itrsgroup.com/docs/geneos/5.14.0/api/rest-api/?v=/v1/rest-api.yaml
 common:
+  - type: Overlay
+    url: overlays/geneos-netprobe-rest-api-overlay.yaml
   - type: Website
     url: https://www.itrsgroup.com/
   - type: ProductPage
