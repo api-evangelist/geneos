@@ -107,6 +107,10 @@ apis:
     surface; ITRS publishes no separate machine-readable API contract for it.
   humanURL: https://docs.itrsgroup.com/docs/geneos/current/visualization/web-dashboard/index.html
   tags:
+  - Dashboards
+  - Visualization
+  - Web
+  tags_raw:
   - Dashboard
   - Visualization
   - Web
