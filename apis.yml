@@ -15,15 +15,20 @@ description: >-
   Rust toolkit library on GitHub.
 type: Index
 deliveryModel:
-  model: self-hosted
-  open_source: false
+  model: saas
+  license_evidence:
+    not_product:
+    - itrs-group/geneos-toolkit-rs
+  open_source: unknown
   commercial: true
   callable_host: false
-  label: Customer-deployed software · you run the endpoint
-  confidence: high
+  label: Hosted service · you call their endpoint
+  confidence: low
   source:
-    - docs
-  generated: '2026-09-12'
+  - openapi
+  - pricing
+  - repository-not-product
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: contact-sales
