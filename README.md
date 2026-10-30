@@ -1,4 +1,4 @@
-# Geneos (geneos)
+# Geneos
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,116 +64,131 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Geneos is ITRS Group's real-time monitoring platform that provides comprehensive observability for trading systems, applications, and infrastructure. Widely deployed across investment banks, hedge funds, and exchanges, Geneos collects high-frequency telemetry from custom samplers and toolkits, aggregates it through Gateways, and exposes that data through REST, XML-RPC, streaming, and SDK interfaces for programmatic access, automation, and dashboarding.
+Geneos is ITRS Group's real-time monitoring and observability platform for trading systems, applications and infrastructure, deployed across investment banks, hedge funds, exchanges, telcos and government. It is customer-deployed software rather than a hosted API: Netprobes collect high-frequency telemetry at the edge, Gateways aggregate and rule over it, and each tier exposes its own programmable surface. The Netprobe ships a published OpenAPI 3.0 REST plug-in for pushing dataviews and streams into monitoring, an XML-RPC Instrumentation API for in-house applications to publish custom dataviews, and the Gateway exposes a JSON/Server-Sent-Events REST command service for running commands, snoozing entities, snapshotting dataviews and validating setup. ITRS also publishes first-party Go tooling (cordial, including the geneos CLI) and a Rust toolkit library on GitHub.
 
-**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/geneos/refs/heads/main/apis.yml)
+**Areas:** APM · Capital Markets · Infrastructure · ITRS · Monitoring · Observability · Real-Time · Trading Systems · XML-RPC · OpenAPI
 
-## Scope
+## Geneos on APIs.io
 
-- **Type:** Index
-- **Position:** Consumer
-- **Access:** 3rd-Party
+Everything profiled for Geneos is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/geneos/](https://apis.io/providers/geneos/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (5)
 
-- APM
-- Capital Markets
-- Infrastructure
-- ITRS
-- Monitoring
-- Observability
-- Real-Time
-- Trading Systems
+- [Geneos Gateway REST Command Service](https://apis.io/apis/geneos/gateway-rest/) — JSON over HTTP(S) service exposed by the Geneos Gateway so third-party applications can run commands, list available commands and command targets, resolve…
+- [Geneos XML-RPC Instrumentation API](https://apis.io/apis/geneos/xml-rpc/) — XML-RPC server exposed by the Netprobe API and API-STREAMS plug-ins so in-house applications, in any language with an XML-RPC client, can create custom…
+- [Geneos Web Dashboard](https://apis.io/apis/geneos/web-dashboard/) — Browser-delivered dashboard server that renders Geneos Active Dashboards and dataviews without the Active Console desktop client. Managed as a Geneos…
+- [Geneos Toolkit (Scripting) Plug-in](https://apis.io/apis/geneos/toolkit/) — Scripting integration point where any executable that emits CSV on stdout becomes a Geneos sampler. The Toolkit is how most custom and third-party…
+- [Geneos REST API](https://apis.io/apis/geneos/geneos-rest-api-api/) — REST API plug-in
 
-## Timestamps
+### Published properties
 
-- **Created:** 2024-01-15
-- **Modified:** 2026-04-28
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### MCP servers (1)
 
-### Geneos Gateway REST API
+Model Context Protocol servers that expose the API to agents.
 
-RESTful API exposed by the Geneos Gateway for retrieving monitoring data and managing dataviews, samplers, entities, and snooze states programmatically.
+- [geneos-mcp.yml](https://apis.io/servers/geneos/geneos-mcp-yml/)
 
-**Human URL:** [Gateway REST API Documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_rest_api.html)
+#### Overlays (1)
 
-#### Tags
+OpenAPI overlays, including conversational phrasing for each operation.
 
-- Monitoring
-- REST
+- [Geneos Netprobe Rest Api Overlay](https://apis.io/overlays/geneos/geneos-netprobe-rest-api-overlay/)
 
-#### Properties
+#### Security (4)
 
-- [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/gateway_rest_api.html)
-- [Authentication](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/rest_api_authentication.html)
+Authentication, trust centre, and vulnerability disclosure.
 
-### Geneos XML-RPC API
+- [Geneos Authentication](https://apis.io/security/geneos/geneos-authentication/)
+- [Geneos Domain Security](https://apis.io/security/geneos/geneos-domain-security/)
+- [Geneos Trust Center](https://apis.io/security/geneos/geneos-trust-center/)
+- [Geneos Vulnerability Disclosure](https://apis.io/security/geneos/geneos-vulnerability-disclosure/)
 
-XML-RPC interface for programmatic control of Geneos Gateway including executing commands, managing configuration, publishing data into Gateways, and retrieving monitoring data.
+#### Plans and pricing (1)
 
-**Human URL:** [XML-RPC API Documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html)
+Published plans, tiers and prices.
 
-#### Tags
+- [Geneos Plans Pricing](https://apis.io/plans/geneos/geneos-plans-pricing/)
 
-- Automation
-- XML-RPC
+#### Rate limits (1)
 
-#### Properties
+Published request limits.
 
-- [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Gateway_Reference_Guide/geneos_xml-rpc_api.html)
+- [Geneos Rate Limits](https://apis.io/rate-limits/geneos/geneos-rate-limits/)
 
-### Geneos Web Dashboard API
+#### FinOps (1)
 
-API for integrating with the Geneos Web Dashboard, enabling custom dashboards, data visualization, and user interface extensions on top of Geneos monitoring data.
+What the API costs to run, by operation.
 
-**Human URL:** [Web Dashboard Documentation](https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/web-dashboard.html)
+- [Geneos Finops](https://apis.io/finops/geneos/geneos-finops/)
 
-#### Tags
+## Where to find this API
 
-- Dashboard
-- UI
-- Visualization
-- Web
-
-#### Properties
-
-- [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Web_Dashboard/web-dashboard.html)
-
-### Geneos Toolkit API
-
-Java and Python APIs delivered through the Geneos Toolkit for building custom integrations, samplers, plugins, and automation scripts that publish data into and pull data out of Geneos.
-
-**Human URL:** [Toolkit Documentation](https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html)
-
-#### Tags
-
-- Java
-- Python
-- SDK
-
-#### Properties
-
-- [Documentation](https://docs.itrsgroup.com/docs/geneos/current/Toolkit/toolkit.html)
-- [Toolkit on GitHub](https://github.com/ITRS-Group/geneos-toolkit)
-- [ITRS Group on GitHub](https://github.com/ITRS-Group)
-
-## Common Properties
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.itrsgroup.com/)
-- [Geneos Product Page](https://www.itrsgroup.com/products/geneos)
 - [Documentation](https://docs.itrsgroup.com/docs/geneos/)
-- [Support](https://www.itrsgroup.com/support)
-- [Community](https://community.itrsgroup.com/)
-- [Knowledge Base](https://kb.itrsgroup.com/)
-- [Training](https://www.itrsgroup.com/training)
-- [Contact](https://www.itrsgroup.com/contact)
-- [Terms of Service](https://www.itrsgroup.com/terms)
-- [Privacy Policy](https://www.itrsgroup.com/privacy)
-- [ITRS Group on GitHub](https://github.com/ITRS-Group)
+- [Getting started](https://docs.itrsgroup.com/docs/geneos/current/getting-started/quickstart/index.html)
+- [API reference](https://docs.itrsgroup.com/docs/geneos/5.14.0/api/rest-api/?v=/v1/rest-api.yaml)
+- [Sign up](https://www.itrsgroup.com/products/free-trials)
+- [Support](https://support.itrsgroup.com)
+- [Blog](https://www.itrsgroup.com/blog)
+- [Terms of service](https://www.itrsgroup.com/legal/terms-of-web-use)
+- [Privacy policy](https://www.itrsgroup.com/legal/privacy-notice)
+- [GitHub](https://github.com/ITRS-Group)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
+**Kin Score 59.7** — strong · rubric 0.25.0 · scored 2026-10-23
 
-**Email:** kin@apievangelist.com
+| Facet | Score |
+|---|---|
+| Discoverability | 64.3 |
+| Contract quality | 41.8 |
+| Contract governance | 18.2 |
+| Operational transparency | 68.4 |
+| Developer ergonomics | 80.4 |
+| Access clarity | 50.0 |
+
+**Agent readiness 29.0** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | documented (partial credit) |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 35.3** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/geneos/](https://apis.io/providers/geneos/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Geneos: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/geneos/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
