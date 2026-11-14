@@ -8,11 +8,20 @@ artifacts:
   capabilities/geneos-capability-edges.yml:
     method: unknown
     evidence: no authorship recorded
+  certification/observations-2026-11-11.jsonl:
+    method: unknown
+    evidence: no authorship recorded
+  certification/status.yml:
+    method: unknown
+    evidence: no authorship recorded
   changelog/geneos-changelog.yml:
     method: searched
     evidence: declared in the artifact
   cli/geneos-cli.yml:
     method: searched
+    evidence: declared in the artifact
+  compliance/geneos-compliance.yml:
+    method: harvested
     evidence: declared in the artifact
   conformance/geneos-conformance.yml:
     method: searched
@@ -20,8 +29,14 @@ artifacts:
   conventions/geneos-conventions.yml:
     method: searched
     evidence: declared in the artifact
+  data-license/geneos-data-license.yml:
+    method: harvested
+    evidence: declared in the artifact
   data-model/geneos-data-model.yml:
     method: derived
+    evidence: declared in the artifact
+  eligibility/geneos-eligibility.yml:
+    method: harvested
     evidence: declared in the artifact
   errors/geneos-problem-types.yml:
     method: searched
@@ -38,6 +53,9 @@ artifacts:
   heartbeat/2026-11-06.yml:
     method: unknown
     evidence: no authorship recorded
+  heartbeat/2026-11-13.yml:
+    method: unknown
+    evidence: no authorship recorded
   integrations/_index.yml:
     method: generated
     evidence: carries an API Evangelist house phrase
@@ -47,7 +65,7 @@ artifacts:
   kin/checks-2026-10-23T222754.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
-  kin/checks-2026-11-02T082323.yml:
+  kin/checks-2026-11-06T143934.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
   kin/score-2026-09-23T000603.yml:
@@ -113,6 +131,9 @@ artifacts:
   kin/score-2026-11-02T082323.yml:
     method: generated
     evidence: Kin Score snapshot written by score.rb
+  kin/score-2026-11-06T143934.yml:
+    method: generated
+    evidence: Kin Score snapshot written by score.rb
   lifecycle/geneos-lifecycle.yml:
     method: searched
     evidence: declared in the artifact
@@ -144,6 +165,9 @@ artifacts:
   plans/geneos-plans-pricing.yml:
     method: searched
     evidence: declared in the artifact
+  privacy/geneos-privacy-policy.yml:
+    method: harvested
+    evidence: declared in the artifact
   rate-limits/geneos-rate-limits.yml:
     method: searched
     evidence: declared in the artifact
@@ -173,6 +197,9 @@ artifacts:
     evidence: declared in the artifact
   skills/geneos-run-gateway-command.md:
     method: generated
+    evidence: declared in the artifact
+  terms/geneos-terms-of-service.yml:
+    method: harvested
     evidence: declared in the artifact
   well-known/geneos-well-known.yml:
     method: unknown
